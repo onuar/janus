@@ -1,5 +1,3 @@
-export default class CardBase {
-    constructor() {
+export default abstract class CardBase {
 
-    }
 }

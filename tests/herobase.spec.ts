@@ -1,8 +1,8 @@
 import { expect, assert } from 'chai';
+import BattleField from '../src/battlefield';
 import HeroBase from '../src/herobase';
 import Player from '../src/player';
 import getHeroMock from './fakes/herobase-fake';
-import BattleField from '../src/battlefield';
 import getBattlefieldMock from './fakes/battlefield-fake';
 
 describe('Hero', () => {
@@ -17,4 +17,3 @@ describe('Hero', () => {
         assert.equal(battlefield.hero1.cards.Count(), 30);
     });
 });
-

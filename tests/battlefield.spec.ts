@@ -2,10 +2,8 @@ import { expect, assert } from 'chai';
 import BattleField from '../src/battlefield';
 import HeroBase from '../src/herobase';
 import Player from '../src/player';
-import HeroNullException from '../src/exceptions/hero-null';
 import getHeroMock from './fakes/herobase-fake';
 import getBattlefieldMock from './fakes/battlefield-fake';
-
 
 describe('Battlefield constructor', () => {
 
