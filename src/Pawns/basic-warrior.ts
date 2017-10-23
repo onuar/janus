@@ -1,8 +1,8 @@
 import Card from '../card';
 
-export default class BasicCard extends Card {
+export default class BasicWarrior extends Card {
     constructor() {
-        super();
+        super(2, 2);
 
     }
 }

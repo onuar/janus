@@ -1,7 +1,8 @@
 import BattleField from './battlefield';
 import getHeroMock from '../tests/fakes/herobase-fake';
+import getBattlefieldMock from '../tests/fakes/battlefield-fake';
+import AttackToHeroContext from './attack-to-hero-context';
 
-
-let hero1 = getHeroMock();
-let hero2 = getHeroMock();
-let battleField = new BattleField(hero1, hero2);
+var battlefield: BattleField = getBattlefieldMock();
+var attack1: AttackToHeroContext = new AttackToHeroContext(battlefield.hero1, battlefield.hero2);
+battlefield.attackToHero(attack1);

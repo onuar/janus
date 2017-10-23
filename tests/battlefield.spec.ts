@@ -4,6 +4,8 @@ import HeroBase from '../src/herobase';
 import Player from '../src/player';
 import getHeroMock from './fakes/herobase-fake';
 import getBattlefieldMock from './fakes/battlefield-fake';
+import AttackToHeroContext from '../src/attack-to-hero-context';
+import InvalidAttackerException from '../src/exceptions/invalid-attacker';
 
 describe('Battlefield constructor', () => {
 
@@ -46,6 +48,21 @@ describe('Battlefield', () => {
         assert.equal(battlefield.hero1.health, 35);
         assert.equal(battlefield.hero2.health, 35);
     });
+
+    it('should allow hero-1 to start at the beginning', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        var attack1: AttackToHeroContext = new AttackToHeroContext(battlefield.hero2, battlefield.hero1);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(InvalidAttackerException);
+    });
+
+    it('should allow hero-2 to play after hero-1 attacked', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        var attack1: AttackToHeroContext = new AttackToHeroContext(battlefield.hero1, battlefield.hero2);
+        battlefield.attackToHero(attack1);
+        var attack2: AttackToHeroContext = new AttackToHeroContext(battlefield.hero2, battlefield.hero1);
+        battlefield.attackToHero(attack2)
+        // assert.equal(battlefield.attackToHero(attack2), true);
+    });
 });
 
 describe('Battlefield heroes', () => {
@@ -55,5 +72,10 @@ describe('Battlefield heroes', () => {
         var hero2: HeroBase = getHeroMock();
         var battlefield: BattleField = new BattleField(hero1, hero2, 35);
         assert.equal(battlefield.hero1.health, battlefield.hero2.health);
+    });
+
+    it('should attack eachothers', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+
     });
 });
