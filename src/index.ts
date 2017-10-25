@@ -10,6 +10,7 @@ import BasicWarrior from './Pawns/basic-warrior';
 var battlefield: BattleField = getBattlefieldMock();
 var attack1: AttackToHeroContext = new AttackToHeroContext(battlefield.hero1.hero, battlefield.hero2.hero);
 battlefield.start();
+// console.log(battlefield.getHero1Hand().Count());
 battlefield.attackToHero(attack1);
 var attack2: AttackToHeroContext = new AttackToHeroContext(battlefield.hero2.hero, battlefield.hero1.hero);
 battlefield.attackToHero(attack2);

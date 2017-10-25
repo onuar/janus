@@ -3,6 +3,8 @@ import AttackToHeroContext from './attack-to-hero-context';
 import AttackToPawnContext from './attack-to-pawn-context';
 import { HeroNullException, NotStartedException, InvalidAttackerException } from "./exceptions";;
 import HeroContainer from './hero-container';
+import Collection from './foundation/generic-collection';
+import CardContainer from './card-container';
 
 
 export default class BattleField {
@@ -33,9 +35,14 @@ export default class BattleField {
         return this._started;
     }
 
-    private prepare(): void {
-        this.hero1.prepare();
-        this.hero2.prepare();
+    getHero1Hand(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero1.hand;
+    }
+
+    getHero2Hand(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero2.hand;
     }
 
     checkStart(): void {
@@ -49,7 +56,7 @@ export default class BattleField {
         if (context.whoAttacks != this._turn.hero) {
             throw new InvalidAttackerException(`Turn owner: ${this._turn}`);
         }
-        
+
         this.changeTurn();
         return true;
     }
@@ -61,6 +68,11 @@ export default class BattleField {
 
     get turn(): HeroBase {
         return this._turn.hero;
+    }
+
+    private prepare(): void {
+        this.hero1.prepare();
+        this.hero2.prepare();
     }
 
     private changeTurn(): void {
