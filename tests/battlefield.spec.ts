@@ -5,7 +5,7 @@ import Player from '../src/player';
 import getHeroMock from './fakes/herobase-fake';
 import getBattlefieldMock from './fakes/battlefield-fake';
 import AttackToHeroContext from '../src/attack-to-hero-context';
-import { NotStartedException } from '../src/exceptions/';
+import { NotStartedException, InvalidAttackException } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/Pawns/basic-warrior';
 
@@ -44,7 +44,7 @@ describe('Health point', () => {
 describe('Battlefield', () => {
     it('should be started at least once before attack', () => {
         var battlefield: BattleField = getBattlefieldMock();
-        var attack1: AttackToHeroContext = new AttackToHeroContext(new CardContainer(0, new BasicWarrior()));
+        var attack1: AttackToHeroContext = new AttackToHeroContext(new CardContainer("GUID", new BasicWarrior()));
         expect(() => battlefield.attackToHero(attack1)).to.throw(NotStartedException);
     });
 
@@ -57,13 +57,12 @@ describe('Battlefield', () => {
         assert.equal(battlefield.hero2.hero.health, 35);
     });
 
-    it('should allow hero-1 to start at the beginning', () => {
+    it('should not allow hero-2 to start at the beginning', () => {
         var battlefield: BattleField = getBattlefieldMock();
         battlefield.start();
         var hero2Hand = battlefield.getHero2Hand();
         var attack1: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
-        // todo
-        // expect(() => battlefield.attackToHero(attack1)).to.throw(InvalidAttackerException);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(InvalidAttackException);
     });
 
     it('should allow hero-2 to play after hero-1 attacked', () => {
@@ -76,8 +75,7 @@ describe('Battlefield', () => {
 
         var hero2Hand = battlefield.getHero2Hand();
         var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
-        // todo
-        // assert.equal(battlefield.attackToHero(attack2), true);
+        assert.equal(battlefield.attackToHero(attack2), true);
     });
 });
 

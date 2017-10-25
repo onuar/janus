@@ -14,6 +14,6 @@ var initHero1Hand = battlefield.getHero1Hand();
 var attack1: AttackToHeroContext = new AttackToHeroContext(initHero1Hand.GetItem(0));
 battlefield.attackToHero(attack1);
 
-var initHero2Hand = battlefield.getHero2Hand();
-var attack2: AttackToHeroContext = new AttackToHeroContext(initHero2Hand.GetItem(0));
+var hero2Hand = battlefield.getHero2Hand();
+var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
 battlefield.attackToHero(attack2);
