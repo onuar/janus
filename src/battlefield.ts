@@ -45,12 +45,6 @@ export default class BattleField {
         return this.hero2.hand;
     }
 
-    checkStart(): void {
-        if (!this._started) {
-            throw new NotStartedException();
-        }
-    }
-
     attackToHero(context: AttackToHeroContext): boolean {
         this.checkStart();
         let isValidPawn = this._turn.validHandCardCheck(context.pawn.id);
@@ -69,6 +63,12 @@ export default class BattleField {
 
     get turn(): HeroBase {
         return this._turn.hero;
+    }
+
+    private checkStart(): void {
+        if (!this._started) {
+            throw new NotStartedException();
+        }
     }
 
     private prepare(): void {

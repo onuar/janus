@@ -8,6 +8,7 @@ import AttackToHeroContext from '../src/attack-to-hero-context';
 import { NotStartedException, InvalidAttackException } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
+import AttackToPawnContext from '../src/attack-to-pawn-context';
 
 describe('Battlefield constructor', () => {
 
@@ -42,12 +43,6 @@ describe('Health point', () => {
 });
 
 describe('Battlefield', () => {
-    
-    it('should be started at least once before attack', () => {
-        var battlefield: BattleField = getBattlefieldMock();
-        var attack1: AttackToHeroContext = new AttackToHeroContext(new CardContainer("GUID", new BasicWarrior()));
-        expect(() => battlefield.attackToHero(attack1)).to.throw(NotStartedException);
-    });
 
     it('should pass health point to hero', () => {
         var hero1: HeroBase = getHeroMock();
@@ -77,6 +72,31 @@ describe('Battlefield', () => {
         var hero2Hand = battlefield.getHero2Hand();
         var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
         assert.equal(battlefield.attackToHero(attack2), true);
+    });
+});
+
+describe('Battlefield start', () => {
+
+    it('should be called before getHero1Hand', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        expect(() => battlefield.getHero1Hand()).to.throw(NotStartedException);
+    });
+
+    it('should be called before getHero2Hand', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        expect(() => battlefield.getHero2Hand()).to.throw(NotStartedException);
+    });
+
+    it('should be called before attackToHero', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        var attack1: AttackToHeroContext = new AttackToHeroContext(new CardContainer("GUID", new BasicWarrior()));
+        expect(() => battlefield.attackToHero(attack1)).to.throw(NotStartedException);
+    });
+
+    it('should be called before attackToPawn', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        var attack1: AttackToPawnContext = new AttackToPawnContext();
+        expect(() => battlefield.attackToPawn(attack1)).to.throw(NotStartedException);
     });
 });
 
