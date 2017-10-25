@@ -1,7 +1,7 @@
 import HeroBase from './herobase';
 import AttackToHeroContext from './attack-to-hero-context';
 import AttackToPawnContext from './attack-to-pawn-context';
-import { HeroNullException, NotStartedException, InvalidAttackerException } from "./exceptions";;
+import { HeroNullException, NotStartedException } from "./exceptions";;
 import HeroContainer from './hero-container';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
@@ -53,10 +53,6 @@ export default class BattleField {
 
     attackToHero(context: AttackToHeroContext): boolean {
         this.checkStart();
-        if (context.whoAttacks != this._turn.hero) {
-            throw new InvalidAttackerException(`Turn owner: ${this._turn}`);
-        }
-
         this.changeTurn();
         return true;
     }

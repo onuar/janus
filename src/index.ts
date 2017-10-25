@@ -8,9 +8,12 @@ import Collection from './foundation/generic-collection';
 import BasicWarrior from './Pawns/basic-warrior';
 
 var battlefield: BattleField = getBattlefieldMock();
-var attack1: AttackToHeroContext = new AttackToHeroContext(battlefield.hero1.hero, battlefield.hero2.hero);
 battlefield.start();
-// console.log(battlefield.getHero1Hand().Count());
+
+var initHero1Hand = battlefield.getHero1Hand();
+var attack1: AttackToHeroContext = new AttackToHeroContext(initHero1Hand.GetItem(0));
 battlefield.attackToHero(attack1);
-var attack2: AttackToHeroContext = new AttackToHeroContext(battlefield.hero2.hero, battlefield.hero1.hero);
+
+var initHero2Hand = battlefield.getHero2Hand();
+var attack2: AttackToHeroContext = new AttackToHeroContext(initHero2Hand.GetItem(0));
 battlefield.attackToHero(attack2);
