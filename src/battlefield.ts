@@ -47,12 +47,17 @@ export default class BattleField {
         return this.hero2.hand;
     }
 
+    discard(played: CardContainer): void {
+        this.checkStart();
+    }
+
     attackToHero(context: AttackToHeroContext): boolean {
         this.checkStart();
         var attacker = this.getAttacker();
         var defencer = this.getDefencer();
 
         let isValidPawn = attacker.validHandCardCheck(context.pawn.id);
+        // todo: change with validGroundCardCheck
         if (!isValidPawn) {
             throw new InvalidAttackException();
         }
@@ -64,6 +69,11 @@ export default class BattleField {
     attackToPawn(context: AttackToPawnContext): boolean {
         this.checkStart();
         return true;
+    }
+
+    pass(): void {
+        this.checkStart();
+        this.changeTurn();
     }
 
     private checkStart(): void {
@@ -79,6 +89,8 @@ export default class BattleField {
 
     private changeTurn(): void {
         this._turn = this._turn == 1 ? 2 : 1;
+        var attacker = this.getAttacker();
+        attacker.pick();
     }
 
     // ugly but works
@@ -87,6 +99,7 @@ export default class BattleField {
         return attacker;
     }
 
+    // ugly but works - 2
     private getDefencer(): HeroContainer {
         var defencer = this._turn == 1 ? this.hero2 : this.hero1;
         return defencer;

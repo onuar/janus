@@ -8,6 +8,7 @@ export default class HeroContainer {
     public hero: HeroBase;
 
     public hand: Collection<CardContainer>;
+    public ground: Collection<CardContainer>;
     public dead: Collection<CardContainer>;
     public deck: Collection<CardContainer>;
 
@@ -33,6 +34,17 @@ export default class HeroContainer {
         this._prepared = true;
     }
 
+    pick(): void {
+        let picked = this.deck.GetItem(0);
+        this.hand.Add(picked);
+        this.deck.Delete(0);
+    }
+
+    // plays card to on the ground
+    play(card: CardContainer): void {
+
+    }
+
     // returns current health
     damage(attack: number): number {
         this._health -= attack;
@@ -41,6 +53,18 @@ export default class HeroContainer {
 
     deadCheck(): boolean {
         this.checkPrepared();
+        return false;
+    }
+
+    validGroundCardCheck(id: string): boolean {
+        this.checkPrepared();
+        for (var index = 0; index < this.ground.Count(); index++) {
+            var element = this.ground.GetItem(index);
+            if (element.id == id) {
+                return true;
+            }
+        }
+
         return false;
     }
 

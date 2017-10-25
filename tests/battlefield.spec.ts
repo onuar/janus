@@ -87,6 +87,12 @@ describe('Battlefield start', () => {
         expect(() => battlefield.getHero2Hand()).to.throw(NotStartedException);
     });
 
+    it('should be called before discard', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        var pawn = new CardContainer('GUID', new BasicWarrior());
+        expect(() => battlefield.discard(pawn)).to.throw(NotStartedException);
+    });
+
     it('should be called before attackToHero', () => {
         var battlefield: BattleField = getBattlefieldMock();
         var attack1: AttackToHeroContext = new AttackToHeroContext(new CardContainer("GUID", new BasicWarrior()));
@@ -97,6 +103,12 @@ describe('Battlefield start', () => {
         var battlefield: BattleField = getBattlefieldMock();
         var attack1: AttackToPawnContext = new AttackToPawnContext();
         expect(() => battlefield.attackToPawn(attack1)).to.throw(NotStartedException);
+    });
+
+    it('should be called before pass', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        var attack1: AttackToPawnContext = new AttackToPawnContext();
+        expect(() => battlefield.pass()).to.throw(NotStartedException);
     });
 });
 
