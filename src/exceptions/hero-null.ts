@@ -1,3 +1,3 @@
-export default class HeroNullException extends Error {
+export class HeroNullException extends Error {
 
 }

@@ -14,6 +14,6 @@ describe('Hero', () => {
 
     it('should have 30 card at the beginning', () => {
         let battlefield: BattleField = getBattlefieldMock();
-        assert.equal(battlefield.hero1.cards.Count(), 30);
+        assert.equal(battlefield.hero1.hero.cards.Count(), 30);
     });
 });

@@ -5,7 +5,7 @@ export default abstract class AttackContext {
     public whoGotAttacked: HeroBase;
 
     constructor(whoAttacks: HeroBase, whoGotAttacked: HeroBase) {
-        whoAttacks = whoAttacks;
-        whoGotAttacked = whoGotAttacked;
+        this.whoAttacks = whoAttacks;
+        this.whoGotAttacked = whoGotAttacked;
     }
 }

@@ -1,4 +1,4 @@
-export default class InvalidAttackerException extends Error {
+export class InvalidAttackerException extends Error {
     constructor(message?: string) {
         super(message);
 
