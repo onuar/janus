@@ -108,9 +108,20 @@ describe('Battlefield heroes', () => {
         var battlefield: BattleField = new BattleField(hero1, hero2, 35);
         assert.equal(battlefield.hero1.hero.health, battlefield.hero2.hero.health);
     });
+});
 
-    it('should attack eachothers', () => {
-        var battlefield: BattleField = getBattlefieldMock();
+describe('Battlefield attackToHero', () => {
 
+    it('should reduce opponent s health', () => {
+        // attack from hero1 to hero2
+        var hero1: HeroBase = getHeroMock();
+        var hero2: HeroBase = getHeroMock();
+        var battlefield: BattleField = new BattleField(hero1, hero2);
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var attackerPawn = hero1Hand.GetItem(0);
+        var attack1 = new AttackToHeroContext(attackerPawn);
+        battlefield.attackToHero(attack1);
+        assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attackerPawn.card.power);
     });
 });

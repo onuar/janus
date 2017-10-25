@@ -13,10 +13,12 @@ export default class HeroContainer {
 
     private initHandCount: number;
     private _prepared: boolean = false;
+    private _health: number;
 
     constructor(hero: HeroBase, initHandCount: number = 4) {
         this.hero = hero;
         this.initHandCount = initHandCount;
+        this._health = hero.health;
     }
 
     prepare(): void {
@@ -29,6 +31,12 @@ export default class HeroContainer {
         this.takeCardsToHand();
 
         this._prepared = true;
+    }
+
+    // returns current health
+    damage(attack: number): number {
+        this._health -= attack;
+        return this._health;
     }
 
     deadCheck(): boolean {
@@ -46,6 +54,10 @@ export default class HeroContainer {
         }
 
         return false;
+    }
+
+    get health(): number {
+        return this._health;
     }
 
     private prepareDeck(): void {

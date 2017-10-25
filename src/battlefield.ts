@@ -11,7 +11,9 @@ export default class BattleField {
     public hero1: HeroContainer;
     public hero2: HeroContainer;
     public health: number;
-    private _turn: HeroContainer;
+
+    private _turn: number;
+
     private _started: boolean;
 
     constructor(hero1: HeroBase, hero2: HeroBase, health?: number) {
@@ -26,7 +28,7 @@ export default class BattleField {
         this.hero1 = new HeroContainer(hero1);
         this.hero2 = new HeroContainer(hero2);
 
-        this._turn = this.hero1;
+        this._turn = 1;
     }
 
     start(): boolean {
@@ -47,11 +49,14 @@ export default class BattleField {
 
     attackToHero(context: AttackToHeroContext): boolean {
         this.checkStart();
-        let isValidPawn = this._turn.validHandCardCheck(context.pawn.id);
+        var attacker = this.getAttacker();
+        var defencer = this.getDefencer();
+
+        let isValidPawn = attacker.validHandCardCheck(context.pawn.id);
         if (!isValidPawn) {
             throw new InvalidAttackException();
         }
-
+        defencer.damage(context.pawn.card.power);
         this.changeTurn();
         return true;
     }
@@ -59,10 +64,6 @@ export default class BattleField {
     attackToPawn(context: AttackToPawnContext): boolean {
         this.checkStart();
         return true;
-    }
-
-    get turn(): HeroBase {
-        return this._turn.hero;
     }
 
     private checkStart(): void {
@@ -77,6 +78,17 @@ export default class BattleField {
     }
 
     private changeTurn(): void {
-        this._turn = (this._turn.hero == this.hero1.hero ? this.hero2 : this.hero1);
+        this._turn = this._turn == 1 ? 2 : 1;
+    }
+
+    // ugly but works
+    private getAttacker(): HeroContainer {
+        var attacker = this._turn == 1 ? this.hero1 : this.hero2;
+        return attacker;
+    }
+
+    private getDefencer(): HeroContainer {
+        var defencer = this._turn == 1 ? this.hero2 : this.hero1;
+        return defencer;
     }
 }

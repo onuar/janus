@@ -7,13 +7,11 @@ import Player from './player';
 import Collection from './foundation/generic-collection';
 import BasicWarrior from './pawns/basic-warrior';
 
-var battlefield: BattleField = getBattlefieldMock();
+var hero1: HeroBase = getHeroMock();
+var hero2: HeroBase = getHeroMock();
+var battlefield: BattleField = new BattleField(hero1, hero2);
 battlefield.start();
-
-var initHero1Hand = battlefield.getHero1Hand();
-var attack1: AttackToHeroContext = new AttackToHeroContext(initHero1Hand.GetItem(0));
+var hero1Hand = battlefield.getHero1Hand();
+var attackerPawn = hero1Hand.GetItem(0);
+var attack1 = new AttackToHeroContext(attackerPawn);
 battlefield.attackToHero(attack1);
-
-var hero2Hand = battlefield.getHero2Hand();
-var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
-battlefield.attackToHero(attack2);

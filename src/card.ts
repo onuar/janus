@@ -6,6 +6,7 @@ export default abstract class Card extends CardBase {
 
     constructor(power: number, health: number) {
         super();
-
+        this.power = power;
+        this.health = health;
     }
 }
