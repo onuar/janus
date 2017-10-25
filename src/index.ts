@@ -5,7 +5,7 @@ import AttackToHeroContext from './attack-to-hero-context';
 import HeroBase from './herobase';
 import Player from './player';
 import Collection from './foundation/generic-collection';
-import BasicWarrior from './Pawns/basic-warrior';
+import BasicWarrior from './pawns/basic-warrior';
 
 var battlefield: BattleField = getBattlefieldMock();
 battlefield.start();

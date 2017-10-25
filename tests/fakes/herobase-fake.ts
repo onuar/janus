@@ -2,7 +2,7 @@ import HeroBase from '../../src/herobase';
 import Player from '../../src/player';
 import Collection from '../../src/foundation/generic-collection';
 import Card from '../../src/card';
-import BasicWarrior from '../../src/Pawns/basic-warrior';
+import BasicWarrior from '../../src/pawns/basic-warrior';
 
 function getHeroMock(): HeroBase {
     let player: Player = new Player();

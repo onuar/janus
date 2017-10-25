@@ -7,7 +7,7 @@ import getBattlefieldMock from './fakes/battlefield-fake';
 import AttackToHeroContext from '../src/attack-to-hero-context';
 import { NotStartedException, InvalidAttackException } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
-import BasicWarrior from '../src/Pawns/basic-warrior';
+import BasicWarrior from '../src/pawns/basic-warrior';
 
 describe('Battlefield constructor', () => {
 
