@@ -2,6 +2,7 @@ import HeroBase from './herobase';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
 import Guid from './foundation/guid';
+import { HeroContainerNotPreparedException } from './exceptions/herocontainer-not-ready';
 
 export default class HeroContainer {
     public hero: HeroBase;
@@ -11,6 +12,7 @@ export default class HeroContainer {
     public deck: Collection<CardContainer>;
 
     private initHandCount: number;
+    private _prepared: boolean = false;
 
     constructor(hero: HeroBase, initHandCount: number = 4) {
         this.hero = hero;
@@ -25,13 +27,17 @@ export default class HeroContainer {
         this.prepareDeck();
         this.shuffleCards();
         this.takeCardsToHand();
+
+        this._prepared = true;
     }
 
     deadCheck(): boolean {
+        this.checkPrepared();
         return false;
     }
 
     validHandCardCheck(id: string): boolean {
+        this.checkPrepared();
         for (var index = 0; index < this.hand.Count(); index++) {
             var element = this.hand.GetItem(index);
             if (element.id == id) {
@@ -63,6 +69,12 @@ export default class HeroContainer {
         for (var index = 0; index < this.initHandCount; index++) {
             var element = this.deck.GetItem(index);
             this.deck.Delete(index);
+        }
+    }
+
+    private checkPrepared(): void {
+        if (!this._prepared) {
+            throw new HeroContainerNotPreparedException();
         }
     }
 }

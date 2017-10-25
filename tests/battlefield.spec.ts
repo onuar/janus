@@ -42,6 +42,7 @@ describe('Health point', () => {
 });
 
 describe('Battlefield', () => {
+    
     it('should be started at least once before attack', () => {
         var battlefield: BattleField = getBattlefieldMock();
         var attack1: AttackToHeroContext = new AttackToHeroContext(new CardContainer("GUID", new BasicWarrior()));
