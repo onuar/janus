@@ -4,7 +4,7 @@ import HeroBase from '../src/herobase';
 import getHeroMock from './fakes/herobase-fake';
 import { HeroContainerNotPreparedException } from '../src/exceptions/herocontainer-not-ready';
 
-describe('hero-container', () => {
+describe('Hero Container', () => {
 
     it('should have cardcontainers with different ids', () => {
         // todo: needs performance improvement. for HeroContainer.deck, maybe dictionary should be considered.
@@ -35,7 +35,7 @@ describe('hero-container', () => {
     });
 });
 
-describe('hero-container prepare', () => {
+describe('Hero Container prepare', () => {
     it('should be called before validHandCardCheck', () => {
         var hero = getHeroMock();
         var heroContainer = new HeroContainer(hero);

@@ -10,38 +10,6 @@ import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
 import AttackToPawnContext from '../src/attack-to-pawn-context';
 
-describe('Battlefield constructor', () => {
-
-    it('should be two hero', () => {
-
-        var battlefield: BattleField = getBattlefieldMock();
-        assert.isNotNull(battlefield.hero1);
-        assert.isNotNull(battlefield.hero2);
-    });
-});
-
-describe('Health point', () => {
-
-    it('should be 30 if it is not assigned', () => {
-        var battlefield: BattleField = getBattlefieldMock();
-        assert.equal(battlefield.health, 30);
-    });
-
-    it('should be overridable', () => {
-        var hero1: HeroBase = getHeroMock();
-        var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2, 45);
-        assert.equal(battlefield.health, 45);
-    });
-
-    it('should be above zero', () => {
-        var hero1: HeroBase = getHeroMock();
-        var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2, -1);
-        assert.equal(battlefield.health, 30);
-    });
-});
-
 describe('Battlefield', () => {
 
     it('should pass health point to hero', () => {
@@ -72,6 +40,38 @@ describe('Battlefield', () => {
         var hero2Hand = battlefield.getHero2Hand();
         var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
         assert.equal(battlefield.attackToHero(attack2), true);
+    });
+});
+
+describe('Battlefield constructor', () => {
+
+    it('should be two hero', () => {
+
+        var battlefield: BattleField = getBattlefieldMock();
+        assert.isNotNull(battlefield.hero1);
+        assert.isNotNull(battlefield.hero2);
+    });
+});
+
+describe('Health point', () => {
+
+    it('should be 30 if it is not assigned', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        assert.equal(battlefield.health, 30);
+    });
+
+    it('should be overridable', () => {
+        var hero1: HeroBase = getHeroMock();
+        var hero2: HeroBase = getHeroMock();
+        var battlefield: BattleField = new BattleField(hero1, hero2, 45);
+        assert.equal(battlefield.health, 45);
+    });
+
+    it('should be above zero', () => {
+        var hero1: HeroBase = getHeroMock();
+        var hero2: HeroBase = getHeroMock();
+        var battlefield: BattleField = new BattleField(hero1, hero2, -1);
+        assert.equal(battlefield.health, 30);
     });
 });
 

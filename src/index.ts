@@ -6,6 +6,7 @@ import HeroBase from './herobase';
 import Player from './player';
 import Collection from './foundation/generic-collection';
 import BasicWarrior from './pawns/basic-warrior';
+import { assert } from 'chai';
 
 var hero1: HeroBase = getHeroMock();
 var hero2: HeroBase = getHeroMock();
@@ -15,3 +16,10 @@ var hero1Hand = battlefield.getHero1Hand();
 var attackerPawn = hero1Hand.GetItem(0);
 var attack1 = new AttackToHeroContext(attackerPawn);
 battlefield.attackToHero(attack1);
+
+var hero2Hand = battlefield.getHero2Hand();
+var attackerPawn2 = hero2Hand.GetItem(0);
+var attack2 = new AttackToHeroContext(attackerPawn2);
+battlefield.attackToHero(attack2);
+
+assert.equal(battlefield.hero1.health, battlefield.hero2.health);
