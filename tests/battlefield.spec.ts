@@ -156,11 +156,45 @@ describe('Battlefield deploy', () => {
         battlefield.pass();//hero 2 to hero 1
         var hero1Hand = battlefield.getHero1Hand();
         attackerPawn = hero1Hand.GetItem(0);
-        battlefield.deploy(attackerPawn);
-        attackerPawn = hero1Hand.GetItem(0);
-        battlefield.deploy(attackerPawn);
-        attackerPawn = hero1Hand.GetItem(0);
+        var current = battlefield.deploy(attackerPawn);
+        attackerPawn = current.CurrentHand.GetItem(0);
+        current = battlefield.deploy(attackerPawn);
+        assert.equal(current.CurrentGround.Count(), 3);
+        assert.equal(current.CurrentHand.Count(), 2);
+        attackerPawn = current.CurrentHand.GetItem(0);
         expect(() => battlefield.deploy(attackerPawn)).to.throw(InsufficientManaException);
+    });
+
+    it('should return a valid Current Hand', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var attackerPawn = hero1Hand.GetItem(0);
+        battlefield.deploy(attackerPawn);
+        battlefield.pass();//hero 1 to hero 2
+        battlefield.pass();//hero 2 to hero 1
+        var hero1Hand = battlefield.getHero1Hand();
+        attackerPawn = hero1Hand.GetItem(0);
+        var current = battlefield.deploy(attackerPawn);
+        attackerPawn = current.CurrentHand.GetItem(0);
+        current = battlefield.deploy(attackerPawn);
+        assert.equal(current.CurrentHand.Count(), 2);
+    });
+
+    it('should return a valid Current Ground', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var attackerPawn = hero1Hand.GetItem(0);
+        battlefield.deploy(attackerPawn);
+        battlefield.pass();//hero 1 to hero 2
+        battlefield.pass();//hero 2 to hero 1
+        var hero1Hand = battlefield.getHero1Hand();
+        attackerPawn = hero1Hand.GetItem(0);
+        var current = battlefield.deploy(attackerPawn);
+        attackerPawn = current.CurrentHand.GetItem(0);
+        current = battlefield.deploy(attackerPawn);
+        assert.equal(current.CurrentGround.Count(), 3);
     });
 });
 
