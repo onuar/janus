@@ -35,7 +35,7 @@ export default class HeroContainer {
         this._prepared = true;
     }
 
-    // pick first card from deck to hand
+    // pick a card from top of the deck to hand
     pick(): void {
         let picked = this.deck.GetItem(0);
         this.hand.Add(picked);

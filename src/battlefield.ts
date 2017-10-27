@@ -5,6 +5,7 @@ import { HeroNullException, NotStartedException, InvalidAttackException, Invalid
 import HeroContainer from './hero-container';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
+import DeployResultContext from './deploy-result-context';
 
 export default class BattleField {
     public hero1: HeroContainer;
@@ -39,7 +40,7 @@ export default class BattleField {
         return this._started;
     }
 
-    deploy(pawn: CardContainer): void {
+    deploy(pawn: CardContainer): DeployResultContext {
         this.checkStart();
         var attacker = this.getAttacker();
         try {
@@ -49,6 +50,8 @@ export default class BattleField {
         }
 
         this._remainingMana = this._remainingMana - pawn.card.mana;
+        let result = new DeployResultContext(this._remainingMana, attacker.hand, attacker.ground);
+        return result;
     }
 
     attackToHero(context: AttackToHeroContext): boolean {
@@ -65,6 +68,7 @@ export default class BattleField {
     }
 
     attackToPawn(context: AttackToPawnContext): boolean {
+        // WIP
         this.checkStart();
         return true;
     }
