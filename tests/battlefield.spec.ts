@@ -12,6 +12,12 @@ import AttackToPawnContext from '../src/attack-to-pawn-context';
 
 describe('Battlefield', () => {
 
+    it('should have two hero', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        assert.isNotNull(battlefield.hero1);
+        assert.isNotNull(battlefield.hero2);
+    });
+
     it('should pass health point to hero', () => {
         var hero1: HeroBase = getHeroMock();
         var hero2: HeroBase = getHeroMock();
@@ -48,19 +54,9 @@ describe('Battlefield', () => {
     });
 });
 
-describe('Battlefield constructor', () => {
+describe('Battlefield health point', () => {
 
-    it('should be two hero', () => {
-
-        var battlefield: BattleField = getBattlefieldMock();
-        assert.isNotNull(battlefield.hero1);
-        assert.isNotNull(battlefield.hero2);
-    });
-});
-
-describe('Health point', () => {
-
-    it('should be 30 if it is not assigned', () => {
+    it('should be 30 by default', () => {
         var battlefield: BattleField = getBattlefieldMock();
         assert.equal(battlefield.health, 30);
     });

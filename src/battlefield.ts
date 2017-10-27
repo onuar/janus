@@ -54,6 +54,7 @@ export default class BattleField {
         return result;
     }
 
+    // todo: will return attackToHeroResult
     attackToHero(context: AttackToHeroContext): boolean {
         this.checkStart();
         var attacker = this.getAttacker();
@@ -67,6 +68,7 @@ export default class BattleField {
         return true;
     }
 
+    // todo: will return attackToPawnResult
     attackToPawn(context: AttackToPawnContext): boolean {
         // WIP
         this.checkStart();
