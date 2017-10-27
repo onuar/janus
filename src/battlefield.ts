@@ -1,7 +1,7 @@
 import HeroBase from './herobase';
 import AttackToHeroContext from './attack-to-hero-context';
 import AttackToPawnContext from './attack-to-pawn-context';
-import { HeroNullException, NotStartedException, InvalidAttackException, InvalidDeployException } from "./exceptions";;
+import { HeroNullException, NotStartedException, InvalidAttackException, InvalidDeployException, GameOverException } from "./exceptions";;
 import HeroContainer from './hero-container';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
@@ -17,6 +17,8 @@ export default class BattleField {
     private _manaTurn: number;
     private _started: boolean;
     private _remainingMana: number;
+    private _gameOver: boolean;
+    private _winner: HeroBase;
 
     constructor(hero1: HeroBase, hero2: HeroBase, health?: number) {
         if (hero1 == null || hero2 == null) {
@@ -32,6 +34,7 @@ export default class BattleField {
 
         this._turn = 1;
         this._manaTurn = 0;
+        this._gameOver = false;
     }
 
     start(): boolean {
@@ -66,6 +69,12 @@ export default class BattleField {
         }
         defencer.damage(context.pawn.card.power);
         let result = new AttackToHeroResult(defencer.health);
+        if (defencer.health <= 0) {
+            result.setWinner(attacker.hero);
+            this._winner = attacker.hero;
+            this.finishGame();
+        }
+
         return result;
     }
 
@@ -79,6 +88,16 @@ export default class BattleField {
     pass(): void {
         this.checkStart();
         this.changeTurn();
+    }
+
+    giveUp(): void {
+        this.finishGame();
+        var winnerContainer = this.getDefencer();
+        this._winner = winnerContainer.hero;
+    }
+
+    finishGame(): void {
+        this._gameOver = true;
     }
 
     manaRound(): number {
@@ -107,13 +126,23 @@ export default class BattleField {
         return this.hero2.ground;
     }
 
-    get remainingMana(): number {
+    get RemainingMana(): number {
         return this._remainingMana;
+    }
+
+    get Winner(): HeroBase {
+        return this._winner;
     }
 
     private checkStart(): void {
         if (!this._started) {
             throw new NotStartedException();
+        }
+    }
+
+    private checkGameOver(): void {
+        if (this._gameOver) {
+            throw new GameOverException();
         }
     }
 

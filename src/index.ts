@@ -34,8 +34,8 @@ const test2 = () => {
     var hero1Hand = battlefield.getHero1Hand();
     var attackerPawn = hero1Hand.GetItem(0);
     battlefield.deploy(attackerPawn);
-    battlefield.deploy(attackerPawn);
+    battlefield.pass();
 };
 
-test2();
+test1();
 // assert.equal(battlefield.hero1.health, battlefield.hero2.health);
