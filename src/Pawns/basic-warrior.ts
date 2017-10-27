@@ -2,7 +2,7 @@ import Card from '../card';
 
 export default class BasicWarrior extends Card {
     constructor() {
-        super(2, 2, 2);
+        super(1, 1, 1);
 
     }
 }

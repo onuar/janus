@@ -2,7 +2,7 @@ import HeroBase from './herobase';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
 import Guid from './foundation/guid';
-import { HeroContainerNotPreparedException } from './exceptions/herocontainer-not-ready';
+import { InvalidDeployException, InsufficientManaException, HeroContainerNotPreparedException } from './exceptions';
 
 export default class HeroContainer {
     public hero: HeroBase;
@@ -43,11 +43,16 @@ export default class HeroContainer {
     }
 
     // deploys a pawn to on the ground
-    deploy(pawn: CardContainer): boolean {
+    deploy(pawn: CardContainer, mana: number): boolean {
         var index = this.validHandCardCheck(pawn.id);
         if (index == -1) {
-            return false;
+            throw new InvalidDeployException();
         }
+
+        if (pawn.card.mana > mana) {
+            throw new InsufficientManaException(`Pawn mana: ${pawn.card.mana} - Remaining Mana: ${mana}`);
+        }
+
         this.ground.Add(pawn);
         this.hand.Delete(index);
         return true;

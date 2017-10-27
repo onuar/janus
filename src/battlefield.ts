@@ -14,6 +14,7 @@ export default class BattleField {
     private _turn: number;
     private _manaTurn: number;
     private _started: boolean;
+    private _remainingMana: number;
 
     constructor(hero1: HeroBase, hero2: HeroBase, health?: number) {
         if (hero1 == null || hero2 == null) {
@@ -34,36 +35,20 @@ export default class BattleField {
     start(): boolean {
         this._started = true;
         this.prepare();
+        this._remainingMana = this.manaRound();
         return this._started;
-    }
-
-    getHero1Hand(): Collection<CardContainer> {
-        this.checkStart();
-        return this.hero1.hand;
-    }
-
-    getHero2Hand(): Collection<CardContainer> {
-        this.checkStart();
-        return this.hero2.hand;
-    }
-
-    getHero1Ground(): Collection<CardContainer> {
-        this.checkStart();
-        return this.hero1.ground;
-    }
-
-    getHero2Ground(): Collection<CardContainer> {
-        this.checkStart();
-        return this.hero2.ground;
     }
 
     deploy(pawn: CardContainer): void {
         this.checkStart();
         var attacker = this.getAttacker();
-        var isDeployed = attacker.deploy(pawn);
-        if (!isDeployed) {
-            throw new InvalidDeployException();
+        try {
+            var isDeployed = attacker.deploy(pawn, this._remainingMana);
+        } catch (error) {
+            throw error;
         }
+
+        this._remainingMana = this._remainingMana - pawn.card.mana;
     }
 
     attackToHero(context: AttackToHeroContext): boolean {
@@ -95,6 +80,30 @@ export default class BattleField {
         return mana;
     }
 
+    getHero1Hand(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero1.hand;
+    }
+
+    getHero2Hand(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero2.hand;
+    }
+
+    getHero1Ground(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero1.ground;
+    }
+
+    getHero2Ground(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero2.ground;
+    }
+
+    get remainingMana(): number {
+        return this._remainingMana;
+    }
+
     private checkStart(): void {
         if (!this._started) {
             throw new NotStartedException();
@@ -111,6 +120,7 @@ export default class BattleField {
         this._manaTurn += 1;
         var attacker = this.getAttacker();
         attacker.pick();
+        this._remainingMana = this.manaRound();
     }
 
     // ugly but works

@@ -5,7 +5,7 @@ import Player from '../src/player';
 import getHeroMock from './fakes/herobase-fake';
 import getBattlefieldMock from './fakes/battlefield-fake';
 import AttackToHeroContext from '../src/attack-to-hero-context';
-import { NotStartedException, InvalidAttackException } from '../src/exceptions/';
+import { NotStartedException, InvalidAttackException, InsufficientManaException } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
 import AttackToPawnContext from '../src/attack-to-pawn-context';
@@ -137,12 +137,33 @@ describe('Battlefield attackToHero', () => {
         battlefield.start();
         var hero1Hand = battlefield.getHero1Hand();
         var attackerPawn = hero1Hand.GetItem(0);
-        var attack1 = new AttackToHeroContext(attackerPawn);
         battlefield.deploy(attackerPawn);
+        var attack1 = new AttackToHeroContext(attackerPawn);
         battlefield.attackToHero(attack1);
         assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attackerPawn.card.power);
     });
 });
+
+describe('Battlefield deploy', () => {
+
+    it('should throw InsufficientManaException if remaining mana is not enough', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var attackerPawn = hero1Hand.GetItem(0);
+        battlefield.deploy(attackerPawn);
+        battlefield.pass();//hero 1 to hero 2
+        battlefield.pass();//hero 2 to hero 1
+        var hero1Hand = battlefield.getHero1Hand();
+        attackerPawn = hero1Hand.GetItem(0);
+        battlefield.deploy(attackerPawn);
+        attackerPawn = hero1Hand.GetItem(0);
+        battlefield.deploy(attackerPawn);
+        attackerPawn = hero1Hand.GetItem(0);
+        expect(() => battlefield.deploy(attackerPawn)).to.throw(InsufficientManaException);
+    });
+});
+
 
 
 describe('Battlefield mana', () => {
