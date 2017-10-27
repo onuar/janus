@@ -213,5 +213,18 @@ describe('Battlefield mana', () => {
         var thirdRound = battlefield.manaRound();
         assert.equal(thirdRound, 3);
     });
+
+    it('should be max 10', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        battlefield.start();
+        var roundCounter = 1;
+        for (var index = 0; index < 20; index++) {
+            battlefield.pass();
+        }
+        assert.equal(battlefield.manaRound(), 10);
+        battlefield.pass();
+        battlefield.pass();
+        assert.equal(battlefield.manaRound(), 10);
+    });
 });
 

@@ -153,7 +153,9 @@ export default class BattleField {
 
     private changeTurn(): void {
         this._turn = this._turn == 1 ? 2 : 1;
-        this._manaTurn += 1;
+        if (this.manaRound() != 10) {
+            this._manaTurn += 1;
+        }
         var attacker = this.getAttacker();
         attacker.pick();
         this._remainingMana = this.manaRound();
