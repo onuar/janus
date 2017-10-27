@@ -36,6 +36,7 @@ describe('Hero Container', () => {
 });
 
 describe('Hero Container prepare', () => {
+    
     it('should be called before validHandCardCheck', () => {
         var hero = getHeroMock();
         var heroContainer = new HeroContainer(hero);

@@ -34,6 +34,7 @@ export default class HeroContainer {
         this._prepared = true;
     }
 
+    // pick first card from deck to hand
     pick(): void {
         let picked = this.deck.GetItem(0);
         this.hand.Add(picked);
@@ -42,10 +43,10 @@ export default class HeroContainer {
 
     // plays card to on the ground
     play(card: CardContainer): void {
-
+        
     }
 
-    // returns current health
+    // returns current health by damage power
     damage(attack: number): number {
         this._health -= attack;
         return this._health;
