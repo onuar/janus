@@ -26,6 +26,7 @@ export default class HeroContainer {
         this.deck = new Collection<CardContainer>();
         this.hand = new Collection<CardContainer>();
         this.dead = new Collection<CardContainer>();
+        this.ground = new Collection<CardContainer>();
 
         this.prepareDeck();
         this.shuffleCards();
@@ -41,9 +42,15 @@ export default class HeroContainer {
         this.deck.Delete(0);
     }
 
-    // plays card to on the ground
-    play(card: CardContainer): void {
-        
+    // deploys a pawn to on the ground
+    deploy(pawn: CardContainer): boolean {
+        var index = this.validHandCardCheck(pawn.id);
+        if (index == -1) {
+            return false;
+        }
+        this.ground.Add(pawn);
+        this.hand.Delete(index);
+        return true;
     }
 
     // returns current health by damage power
@@ -57,28 +64,30 @@ export default class HeroContainer {
         return false;
     }
 
-    validGroundCardCheck(id: string): boolean {
+    // returns the index of the found pawn. if not, returns -1.
+    validGroundCardCheck(id: string): number {
         this.checkPrepared();
         for (var index = 0; index < this.ground.Count(); index++) {
             var element = this.ground.GetItem(index);
             if (element.id == id) {
-                return true;
+                return index;
             }
         }
 
-        return false;
+        return -1;
     }
 
-    validHandCardCheck(id: string): boolean {
+    // returns the index of the found pawn. if not, returns -1.
+    validHandCardCheck(id: string): number {
         this.checkPrepared();
         for (var index = 0; index < this.hand.Count(); index++) {
             var element = this.hand.GetItem(index);
             if (element.id == id) {
-                return true;
+                return index;
             }
         }
 
-        return false;
+        return -1;
     }
 
     get health(): number {

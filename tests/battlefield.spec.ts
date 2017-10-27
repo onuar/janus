@@ -34,12 +34,16 @@ describe('Battlefield', () => {
         battlefield.start();
 
         var hero1Hand = battlefield.getHero1Hand();
-        var attack1: AttackToHeroContext = new AttackToHeroContext(hero1Hand.GetItem(0));
+        var pawn1 = hero1Hand.GetItem(0);
+        var attack1: AttackToHeroContext = new AttackToHeroContext(pawn1);
+        battlefield.deploy(pawn1);
         battlefield.attackToHero(attack1);
         battlefield.pass();
 
         var hero2Hand = battlefield.getHero2Hand();
-        var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
+        var pawn2 = hero2Hand.GetItem(0);
+        battlefield.deploy(pawn2);
+        var attack2: AttackToHeroContext = new AttackToHeroContext(pawn2);
         assert.equal(battlefield.attackToHero(attack2), true);
     });
 });
@@ -88,10 +92,10 @@ describe('Battlefield start', () => {
         expect(() => battlefield.getHero2Hand()).to.throw(NotStartedException);
     });
 
-    it('should be called before discard', () => {
+    it('should be called before deploy', () => {
         var battlefield: BattleField = getBattlefieldMock();
         var pawn = new CardContainer('GUID', new BasicWarrior());
-        expect(() => battlefield.discard(pawn)).to.throw(NotStartedException);
+        expect(() => battlefield.deploy(pawn)).to.throw(NotStartedException);
     });
 
     it('should be called before attackToHero', () => {
@@ -134,6 +138,7 @@ describe('Battlefield attackToHero', () => {
         var hero1Hand = battlefield.getHero1Hand();
         var attackerPawn = hero1Hand.GetItem(0);
         var attack1 = new AttackToHeroContext(attackerPawn);
+        battlefield.deploy(attackerPawn);
         battlefield.attackToHero(attack1);
         assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attackerPawn.card.power);
     });

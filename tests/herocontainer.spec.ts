@@ -31,12 +31,12 @@ describe('Hero Container', () => {
         var heroContainer = new HeroContainer(hero);
         heroContainer.prepare();
         var isValid = heroContainer.validHandCardCheck('Wrong card id');
-        assert.equal(isValid, false);
+        assert.equal(isValid, -1);
     });
 });
 
 describe('Hero Container prepare', () => {
-    
+
     it('should be called before validHandCardCheck', () => {
         var hero = getHeroMock();
         var heroContainer = new HeroContainer(hero);

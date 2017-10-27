@@ -1,11 +1,10 @@
 import HeroBase from './herobase';
 import AttackToHeroContext from './attack-to-hero-context';
 import AttackToPawnContext from './attack-to-pawn-context';
-import { HeroNullException, NotStartedException, InvalidAttackException } from "./exceptions";;
+import { HeroNullException, NotStartedException, InvalidAttackException, InvalidDeployException } from "./exceptions";;
 import HeroContainer from './hero-container';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
-
 
 export default class BattleField {
     public hero1: HeroContainer;
@@ -48,8 +47,23 @@ export default class BattleField {
         return this.hero2.hand;
     }
 
-    discard(played: CardContainer): void {
+    getHero1Ground(): Collection<CardContainer> {
         this.checkStart();
+        return this.hero1.ground;
+    }
+
+    getHero2Ground(): Collection<CardContainer> {
+        this.checkStart();
+        return this.hero2.ground;
+    }
+
+    deploy(pawn: CardContainer): void {
+        this.checkStart();
+        var attacker = this.getAttacker();
+        var isDeployed = attacker.deploy(pawn);
+        if (!isDeployed) {
+            throw new InvalidDeployException();
+        }
     }
 
     attackToHero(context: AttackToHeroContext): boolean {
@@ -57,9 +71,8 @@ export default class BattleField {
         var attacker = this.getAttacker();
         var defencer = this.getDefencer();
 
-        let isValidPawn = attacker.validHandCardCheck(context.pawn.id);
-        // todo: change with validGroundCardCheck
-        if (!isValidPawn) {
+        let isValidPawn = attacker.validGroundCardCheck(context.pawn.id);
+        if (isValidPawn == -1) {
             throw new InvalidAttackException();
         }
         defencer.damage(context.pawn.card.power);
