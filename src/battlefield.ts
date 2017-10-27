@@ -13,7 +13,7 @@ export default class BattleField {
     public health: number;
 
     private _turn: number;
-
+    private _manaTurn: number;
     private _started: boolean;
 
     constructor(hero1: HeroBase, hero2: HeroBase, health?: number) {
@@ -29,6 +29,7 @@ export default class BattleField {
         this.hero2 = new HeroContainer(hero2);
 
         this._turn = 1;
+        this._manaTurn = 0;
     }
 
     start(): boolean {
@@ -62,7 +63,6 @@ export default class BattleField {
             throw new InvalidAttackException();
         }
         defencer.damage(context.pawn.card.power);
-        this.changeTurn();
         return true;
     }
 
@@ -74,6 +74,12 @@ export default class BattleField {
     pass(): void {
         this.checkStart();
         this.changeTurn();
+    }
+
+    manaRound(): number {
+        let i = this._manaTurn / 2;
+        let mana = i + 1;
+        return mana;
     }
 
     private checkStart(): void {
@@ -89,6 +95,7 @@ export default class BattleField {
 
     private changeTurn(): void {
         this._turn = this._turn == 1 ? 2 : 1;
+        this._manaTurn += 1;
         var attacker = this.getAttacker();
         attacker.pick();
     }

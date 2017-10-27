@@ -36,6 +36,7 @@ describe('Battlefield', () => {
         var hero1Hand = battlefield.getHero1Hand();
         var attack1: AttackToHeroContext = new AttackToHeroContext(hero1Hand.GetItem(0));
         battlefield.attackToHero(attack1);
+        battlefield.pass();
 
         var hero2Hand = battlefield.getHero2Hand();
         var attack2: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
@@ -137,3 +138,23 @@ describe('Battlefield attackToHero', () => {
         assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attackerPawn.card.power);
     });
 });
+
+
+describe('Battlefield mana', () => {
+
+    it('should increase after every each player played', () => {
+        var battlefield: BattleField = getBattlefieldMock();
+        battlefield.start();
+        var firstRound = battlefield.manaRound();
+        assert.equal(firstRound, 1);
+        battlefield.pass(); // hero 1 to hero 2
+        battlefield.pass(); // hero 2 to hero 1
+        var secondRound = battlefield.manaRound();
+        assert.equal(secondRound, 2);
+        battlefield.pass(); // hero 1 to hero 2
+        battlefield.pass(); // hero 2 to hero 1
+        var thirdRound = battlefield.manaRound();
+        assert.equal(thirdRound, 3);
+    });
+});
+
