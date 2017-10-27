@@ -50,7 +50,8 @@ describe('Battlefield', () => {
         var pawn2 = hero2Hand.GetItem(0);
         battlefield.deploy(pawn2);
         var attack2: AttackToHeroContext = new AttackToHeroContext(pawn2);
-        assert.equal(battlefield.attackToHero(attack2), true);
+        var secondAttack = battlefield.attackToHero(attack2)
+        assert.equal(secondAttack.OpponentHealth, 29);
     });
 });
 

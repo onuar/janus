@@ -6,6 +6,7 @@ import HeroContainer from './hero-container';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
 import DeployResultContext from './deploy-result-context';
+import AttackToHeroResult from './attack-to-hero-result';
 
 export default class BattleField {
     public hero1: HeroContainer;
@@ -54,8 +55,7 @@ export default class BattleField {
         return result;
     }
 
-    // todo: will return attackToHeroResult
-    attackToHero(context: AttackToHeroContext): boolean {
+    attackToHero(context: AttackToHeroContext): AttackToHeroResult {
         this.checkStart();
         var attacker = this.getAttacker();
         var defencer = this.getDefencer();
@@ -65,7 +65,8 @@ export default class BattleField {
             throw new InvalidAttackException();
         }
         defencer.damage(context.pawn.card.power);
-        return true;
+        let result = new AttackToHeroResult(defencer.health);
+        return result;
     }
 
     // todo: will return attackToPawnResult
