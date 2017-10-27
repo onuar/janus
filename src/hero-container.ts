@@ -3,14 +3,16 @@ import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
 import Guid from './foundation/guid';
 import { InvalidDeployException, InsufficientManaException, HeroContainerNotPreparedException } from './exceptions';
+import CardCollection from './card-collection';
+import CardContainerCollection from './card-container-collection';
 
 export default class HeroContainer {
     public hero: HeroBase;
 
-    public hand: Collection<CardContainer>;
-    public ground: Collection<CardContainer>;
-    public dead: Collection<CardContainer>;
-    public deck: Collection<CardContainer>;
+    public hand: CardContainerCollection;
+    public ground: CardContainerCollection;
+    public dead: CardContainerCollection;
+    public deck: CardContainerCollection;
 
     private initHandCount: number;
     private _prepared: boolean = false;
@@ -23,10 +25,10 @@ export default class HeroContainer {
     }
 
     prepare(): void {
-        this.deck = new Collection<CardContainer>();
-        this.hand = new Collection<CardContainer>();
-        this.dead = new Collection<CardContainer>();
-        this.ground = new Collection<CardContainer>();
+        this.deck = new CardContainerCollection();
+        this.hand = new CardContainerCollection();
+        this.dead = new CardContainerCollection();
+        this.ground = new CardContainerCollection();
 
         this.prepareDeck();
         this.shuffleCards();
