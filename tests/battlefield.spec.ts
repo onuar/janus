@@ -8,7 +8,7 @@ import AttackToHeroContext from '../src/attack-to-hero-context';
 import {
     NotStartedException, InvalidAttackException,
     InsufficientManaException, PawnWaitingException,
-    InvalidDeployException
+    InvalidDeployException, PawnAlreadyAttackedException
 } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
@@ -138,45 +138,6 @@ describe('Battlefield heroes', () => {
     });
 });
 
-describe('Battlefield attackToHero', () => {
-
-    it('should reduce opponent s health', () => {
-        // attack from hero1 to hero2
-        var hero1: HeroBase = getHeroMock();
-        var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2);
-        battlefield.start();
-
-        // hero 1 turn
-        var hero1Hand = battlefield.getHero1Hand();
-        var pawn1 = hero1Hand.getItem(0);
-        var hero1Current = battlefield.deploy(pawn1);
-        battlefield.pass();
-
-        // hero 2 turn
-        battlefield.pass();
-
-        // hero 1 turn
-        var attacker1 = hero1Current.CurrentGround.getItem(0);
-        var attack1: AttackToHeroContext = new AttackToHeroContext(attacker1);
-        battlefield.attackToHero(attack1);
-
-        assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attacker1.card.power);
-    });
-
-    it('should throw PawnWaitingException if played card is waiting', () => {
-        var battlefield = getBattlefieldMock();
-        battlefield.start();
-        var hero1Hand = battlefield.getHero1Hand();
-        var pawn1 = hero1Hand.getItem(0);
-        var hero1Current = battlefield.deploy(pawn1);
-
-        var waitingPawn = hero1Current.CurrentGround.getItem(0);
-        var attack1 = new AttackToHeroContext(waitingPawn);
-        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnWaitingException);
-    });
-});
-
 describe('Battlefield deploy', () => {
 
     it('should throw InsufficientManaException if remaining mana is not enough', () => {
@@ -281,3 +242,61 @@ describe('Battlefield mana', () => {
     });
 });
 
+describe('Battlefield attackToHero', () => {
+
+    it('should reduce opponent s health', () => {
+        // attack from hero1 to hero2
+        var hero1: HeroBase = getHeroMock();
+        var hero2: HeroBase = getHeroMock();
+        var battlefield: BattleField = new BattleField(hero1, hero2);
+        battlefield.start();
+
+        // hero 1 turn
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        battlefield.pass();
+
+        // hero 1 turn
+        var attacker1 = hero1Current.CurrentGround.getItem(0);
+        var attack1: AttackToHeroContext = new AttackToHeroContext(attacker1);
+        battlefield.attackToHero(attack1);
+
+        assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attacker1.card.power);
+    });
+
+    it('should throw PawnWaitingException if played card is waiting', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+
+        var waitingPawn = hero1Current.CurrentGround.getItem(0);
+        var attack1 = new AttackToHeroContext(waitingPawn);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnWaitingException);
+    });
+
+    it('should throw PawnAlreadyAttackedException if pawn is already attacked', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+
+        // hero 1 turn
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        battlefield.pass();
+
+        // hero 1 turn
+        var pawn1 = hero1Current.CurrentGround.getItem(0);
+        var attack1 = new AttackToHeroContext(pawn1);
+        battlefield.attackToHero(attack1);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnAlreadyAttackedException);
+    });
+});

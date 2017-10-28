@@ -5,7 +5,7 @@ import Guid from './foundation/guid';
 import {
     InvalidDeployException, InsufficientManaException,
     HeroContainerNotPreparedException, InvalidAttackException,
-    PawnWaitingException
+    PawnWaitingException, PawnAlreadyAttackedException
 } from './exceptions';
 import CardCollection from './card-collection';
 import CardContainerCollection from './card-container-collection';
@@ -64,9 +64,16 @@ export default class HeroContainer {
         return true;
     }
 
+    setAsAttacked(pawn: CardContainer, round: number): void {
+        var item = this.ground.getItemById(pawn.id);
+        if (item != undefined) {
+            item.lastAttackRound = round;
+        }
+    }
+
     // returns current health by damage power
-    damage(attack: number): number {
-        this._health -= attack;
+    damage(pawn: CardContainer, round: number): number {
+        this._health -= pawn.card.power;
         return this._health;
     }
 
@@ -83,6 +90,10 @@ export default class HeroContainer {
             if (element.id == id) {
                 if (element.deployingRound == round) {
                     throw new PawnWaitingException();
+                }
+
+                if (element.lastAttackRound == round) {
+                    throw new PawnAlreadyAttackedException();
                 }
 
                 return index;

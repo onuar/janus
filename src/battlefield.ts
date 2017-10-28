@@ -70,9 +70,10 @@ export default class BattleField {
         } catch (error) {
             throw error;
         }
-
-        defencer.damage(context.pawn.card.power);
+        attacker.setAsAttacked(context.pawn, round);
+        defencer.damage(context.pawn, round);
         let result = new AttackToHeroResult(defencer.health);
+
         if (defencer.health <= 0) {
             result.setWinner(attacker.hero);
             this._winner = attacker.hero;

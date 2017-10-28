@@ -7,6 +7,8 @@ import Player from './player';
 import Collection from './foundation/generic-collection';
 import BasicWarrior from './pawns/basic-warrior';
 import { assert } from 'chai';
+import CardContainerCollection from './card-container-collection';
+import CardContainer from './card-container';
 
 const test1 = () => {
     var battlefield: BattleField = getBattlefieldMock();

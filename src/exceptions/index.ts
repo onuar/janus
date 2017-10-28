@@ -6,3 +6,4 @@ export * from './invalid-deploy';
 export * from './insufficient-mana';
 export * from './game-over';
 export * from './pawn-waiting';
+export * from './pawn-already-attacked';
