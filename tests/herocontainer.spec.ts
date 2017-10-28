@@ -25,23 +25,9 @@ describe('Hero Container', () => {
             assert.equal(count, 1);
         }
     });
-
-    it('should return false if card is not in hand', () => {
-        var hero = getHeroMock();
-        var heroContainer = new HeroContainer(hero);
-        heroContainer.prepare();
-        var isValid = heroContainer.validHandCardCheck('Wrong card id');
-        assert.equal(isValid, -1);
-    });
 });
 
 describe('Hero Container prepare', () => {
-
-    it('should be called before validHandCardCheck', () => {
-        var hero = getHeroMock();
-        var heroContainer = new HeroContainer(hero);
-        expect(() => heroContainer.validHandCardCheck('test')).to.throw(HeroContainerNotPreparedException);
-    });
 
     it('should be called before deadCheck', () => {
         var hero = getHeroMock();

@@ -7,7 +7,8 @@ import getBattlefieldMock from './fakes/battlefield-fake';
 import AttackToHeroContext from '../src/attack-to-hero-context';
 import {
     NotStartedException, InvalidAttackException,
-    InsufficientManaException, PawnWaitingException
+    InsufficientManaException, PawnWaitingException,
+    InvalidDeployException
 } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
@@ -195,6 +196,14 @@ describe('Battlefield deploy', () => {
         assert.equal(current.CurrentHand.count(), 2);
         attackerPawn = current.CurrentHand.getItem(0);
         expect(() => battlefield.deploy(attackerPawn)).to.throw(InsufficientManaException);
+    });
+
+    it('should throw InvalidDeployException if card is not in hand', () => {
+        var invalidPawn = new CardContainer('INVALID GUID', new BasicWarrior());
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+        expect(() => battlefield.deploy(invalidPawn)).to.throw(InvalidDeployException);
+
     });
 
     it('should return a valid Current Hand', () => {
