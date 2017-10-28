@@ -15,14 +15,14 @@ const test1 = () => {
     battlefield.start();
 
     var hero1Hand = battlefield.getHero1Hand();
-    var attackerPawn = hero1Hand.GetItem(0);
+    var attackerPawn = hero1Hand.getItem(0);
     battlefield.deploy(attackerPawn);
     var attack1 = new AttackToHeroContext(attackerPawn);
     battlefield.attackToHero(attack1);
     battlefield.pass();
 
     var hero2Hand = battlefield.getHero2Hand();
-    var attackerPawn2 = hero2Hand.GetItem(0);
+    var attackerPawn2 = hero2Hand.getItem(0);
     battlefield.deploy(attackerPawn2);
     var attack2 = new AttackToHeroContext(attackerPawn2);
     battlefield.attackToHero(attack2);
@@ -32,7 +32,7 @@ const test2 = () => {
     var battlefield: BattleField = getBattlefieldMock();
     battlefield.start();
     var hero1Hand = battlefield.getHero1Hand();
-    var attackerPawn = hero1Hand.GetItem(0);
+    var attackerPawn = hero1Hand.getItem(0);
     battlefield.deploy(attackerPawn);
     battlefield.pass();
 };

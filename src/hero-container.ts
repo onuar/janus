@@ -39,9 +39,9 @@ export default class HeroContainer {
 
     // pick a card from top of the deck to hand
     pick(): void {
-        let picked = this.deck.GetItem(0);
-        this.hand.Add(picked);
-        this.deck.Delete(0);
+        let picked = this.deck.getItem(0);
+        this.hand.add(picked);
+        this.deck.delete(0);
     }
 
     // deploys a pawn to on the ground
@@ -55,8 +55,8 @@ export default class HeroContainer {
             throw new InsufficientManaException(`Pawn mana: ${pawn.card.mana} - Remaining Mana: ${mana}`);
         }
 
-        this.ground.Add(pawn);
-        this.hand.Delete(index);
+        this.ground.add(pawn);
+        this.hand.delete(index);
         return true;
     }
 
@@ -74,8 +74,8 @@ export default class HeroContainer {
     // returns the index of the found pawn. if not, returns -1.
     validGroundCardCheck(id: string): number {
         this.checkPrepared();
-        for (var index = 0; index < this.ground.Count(); index++) {
-            var element = this.ground.GetItem(index);
+        for (var index = 0; index < this.ground.count(); index++) {
+            var element = this.ground.getItem(index);
             if (element.id == id) {
                 return index;
             }
@@ -87,8 +87,8 @@ export default class HeroContainer {
     // returns the index of the found pawn. if not, returns -1.
     validHandCardCheck(id: string): number {
         this.checkPrepared();
-        for (var index = 0; index < this.hand.Count(); index++) {
-            var element = this.hand.GetItem(index);
+        for (var index = 0; index < this.hand.count(); index++) {
+            var element = this.hand.getItem(index);
             if (element.id == id) {
                 return index;
             }
@@ -102,11 +102,11 @@ export default class HeroContainer {
     }
 
     private prepareDeck(): void {
-        for (var index = 0; index < this.hero.cards.Count(); index++) {
-            var element = this.hero.cards.GetItem(index);
+        for (var index = 0; index < this.hero.cards.count(); index++) {
+            var element = this.hero.cards.getItem(index);
             var id = Guid.newGuid();
             let cardContainer: CardContainer = new CardContainer(id, element);
-            this.deck.Add(cardContainer);
+            this.deck.add(cardContainer);
         }
     }
 
@@ -116,12 +116,12 @@ export default class HeroContainer {
 
     private takeCardsToHand(): void {
         for (var index = 0; index < this.initHandCount; index++) {
-            var element = this.deck.GetItem(index);
-            this.hand.Add(element);
+            var element = this.deck.getItem(index);
+            this.hand.add(element);
         }
         for (var index = 0; index < this.initHandCount; index++) {
-            var element = this.deck.GetItem(index);
-            this.deck.Delete(index);
+            var element = this.deck.getItem(index);
+            this.deck.delete(index);
         }
     }
 

@@ -12,11 +12,11 @@ describe('Hero Container', () => {
         var heroContainer = new HeroContainer(hero);
         heroContainer.prepare();
 
-        for (var i = 0; i < heroContainer.deck.Count(); i++) {
-            var parent = heroContainer.deck.GetItem(i);
+        for (var i = 0; i < heroContainer.deck.count(); i++) {
+            var parent = heroContainer.deck.getItem(i);
             var count: number = 0;
-            for (var k = 0; k < heroContainer.deck.Count(); k++) {
-                var inner = heroContainer.deck.GetItem(k);
+            for (var k = 0; k < heroContainer.deck.count(); k++) {
+                var inner = heroContainer.deck.getItem(k);
                 if (parent.id == inner.id) {
                     count++;
                 }

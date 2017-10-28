@@ -3,10 +3,10 @@ import Card from './card';
 import { InvalidManaException } from './exceptions/invalid-mana';
 
 export default class CardCollection extends Collection<Card>{
-    public Add(item: Card) {
+    add(item: Card) {
         if (item.mana < 0 || item.mana > 10) {
             throw new InvalidManaException(`${item.mana}`);
         }
-        super.Add(item);
+        super.add(item);
     }
 }

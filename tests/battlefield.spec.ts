@@ -31,7 +31,7 @@ describe('Battlefield', () => {
         var battlefield: BattleField = getBattlefieldMock();
         battlefield.start();
         var hero2Hand = battlefield.getHero2Hand();
-        var attack1: AttackToHeroContext = new AttackToHeroContext(hero2Hand.GetItem(0));
+        var attack1: AttackToHeroContext = new AttackToHeroContext(hero2Hand.getItem(0));
         expect(() => battlefield.attackToHero(attack1)).to.throw(InvalidAttackException);
     });
 
@@ -40,14 +40,14 @@ describe('Battlefield', () => {
         battlefield.start();
 
         var hero1Hand = battlefield.getHero1Hand();
-        var pawn1 = hero1Hand.GetItem(0);
+        var pawn1 = hero1Hand.getItem(0);
         var attack1: AttackToHeroContext = new AttackToHeroContext(pawn1);
         battlefield.deploy(pawn1);
         battlefield.attackToHero(attack1);
         battlefield.pass();
 
         var hero2Hand = battlefield.getHero2Hand();
-        var pawn2 = hero2Hand.GetItem(0);
+        var pawn2 = hero2Hand.getItem(0);
         battlefield.deploy(pawn2);
         var attack2: AttackToHeroContext = new AttackToHeroContext(pawn2);
         var secondAttack = battlefield.attackToHero(attack2)
@@ -133,7 +133,7 @@ describe('Battlefield attackToHero', () => {
         var battlefield: BattleField = new BattleField(hero1, hero2);
         battlefield.start();
         var hero1Hand = battlefield.getHero1Hand();
-        var attackerPawn = hero1Hand.GetItem(0);
+        var attackerPawn = hero1Hand.getItem(0);
         battlefield.deploy(attackerPawn);
         var attack1 = new AttackToHeroContext(attackerPawn);
         battlefield.attackToHero(attack1);
@@ -147,18 +147,18 @@ describe('Battlefield deploy', () => {
         var battlefield: BattleField = getBattlefieldMock();
         battlefield.start();
         var hero1Hand = battlefield.getHero1Hand();
-        var attackerPawn = hero1Hand.GetItem(0);
+        var attackerPawn = hero1Hand.getItem(0);
         battlefield.deploy(attackerPawn);
         battlefield.pass();//hero 1 to hero 2
         battlefield.pass();//hero 2 to hero 1
         var hero1Hand = battlefield.getHero1Hand();
-        attackerPawn = hero1Hand.GetItem(0);
+        attackerPawn = hero1Hand.getItem(0);
         var current = battlefield.deploy(attackerPawn);
-        attackerPawn = current.CurrentHand.GetItem(0);
+        attackerPawn = current.CurrentHand.getItem(0);
         current = battlefield.deploy(attackerPawn);
-        assert.equal(current.CurrentGround.Count(), 3);
-        assert.equal(current.CurrentHand.Count(), 2);
-        attackerPawn = current.CurrentHand.GetItem(0);
+        assert.equal(current.CurrentGround.count(), 3);
+        assert.equal(current.CurrentHand.count(), 2);
+        attackerPawn = current.CurrentHand.getItem(0);
         expect(() => battlefield.deploy(attackerPawn)).to.throw(InsufficientManaException);
     });
 
@@ -166,36 +166,34 @@ describe('Battlefield deploy', () => {
         var battlefield: BattleField = getBattlefieldMock();
         battlefield.start();
         var hero1Hand = battlefield.getHero1Hand();
-        var attackerPawn = hero1Hand.GetItem(0);
+        var attackerPawn = hero1Hand.getItem(0);
         battlefield.deploy(attackerPawn);
         battlefield.pass();//hero 1 to hero 2
         battlefield.pass();//hero 2 to hero 1
         var hero1Hand = battlefield.getHero1Hand();
-        attackerPawn = hero1Hand.GetItem(0);
+        attackerPawn = hero1Hand.getItem(0);
         var current = battlefield.deploy(attackerPawn);
-        attackerPawn = current.CurrentHand.GetItem(0);
+        attackerPawn = current.CurrentHand.getItem(0);
         current = battlefield.deploy(attackerPawn);
-        assert.equal(current.CurrentHand.Count(), 2);
+        assert.equal(current.CurrentHand.count(), 2);
     });
 
     it('should return a valid Current Ground', () => {
         var battlefield: BattleField = getBattlefieldMock();
         battlefield.start();
         var hero1Hand = battlefield.getHero1Hand();
-        var attackerPawn = hero1Hand.GetItem(0);
+        var attackerPawn = hero1Hand.getItem(0);
         battlefield.deploy(attackerPawn);
         battlefield.pass();//hero 1 to hero 2
         battlefield.pass();//hero 2 to hero 1
         var hero1Hand = battlefield.getHero1Hand();
-        attackerPawn = hero1Hand.GetItem(0);
+        attackerPawn = hero1Hand.getItem(0);
         var current = battlefield.deploy(attackerPawn);
-        attackerPawn = current.CurrentHand.GetItem(0);
+        attackerPawn = current.CurrentHand.getItem(0);
         current = battlefield.deploy(attackerPawn);
-        assert.equal(current.CurrentGround.Count(), 3);
+        assert.equal(current.CurrentGround.count(), 3);
     });
 });
-
-
 
 describe('Battlefield mana', () => {
 

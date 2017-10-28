@@ -1,25 +1,25 @@
 export default class Collection<T> {
     private _items: any[] = [];
 
-    public GetItems() {
+    getItems() {
         return this._items;
     }
 
-    public GetItem(index: number): T {
+    getItem(index: number): T {
         return this._items[index];
     }
 
-    public Count() { return this._items.length; }
+    count() { return this._items.length; }
 
-    public Add(item: T) {
+    add(item: T) {
         this._items.push(item);
     }
 
-    public Delete(itemIndex: number) {
+    delete(itemIndex: number) {
         this._items.splice(itemIndex, 1);
     }
 
-    public IndexOfItem(obj: T, fromIndex?: number): number {
+    indexOfItem(obj: T, fromIndex?: number): number {
         if (fromIndex == null) {
             fromIndex = 0;
         } else if (fromIndex < 0) {

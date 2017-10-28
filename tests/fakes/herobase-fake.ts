@@ -11,7 +11,7 @@ function getHeroMock(): HeroBase {
 
     for (var i = 0; i < 30; i++) {
         let c: Card = new BasicWarrior();
-        cards.Add(c);
+        cards.add(c);
 
     }
     return new HeroBase(player, cards);
