@@ -5,7 +5,10 @@ import Player from '../src/player';
 import getHeroMock from './fakes/herobase-fake';
 import getBattlefieldMock from './fakes/battlefield-fake';
 import AttackToHeroContext from '../src/attack-to-hero-context';
-import { NotStartedException, InvalidAttackException, InsufficientManaException } from '../src/exceptions/';
+import {
+    NotStartedException, InvalidAttackException,
+    InsufficientManaException, PawnWaitingException
+} from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
 import AttackToPawnContext from '../src/attack-to-pawn-context';
@@ -39,19 +42,29 @@ describe('Battlefield', () => {
         var battlefield: BattleField = getBattlefieldMock();
         battlefield.start();
 
+        // hero 1 turn
         var hero1Hand = battlefield.getHero1Hand();
         var pawn1 = hero1Hand.getItem(0);
-        var attack1: AttackToHeroContext = new AttackToHeroContext(pawn1);
-        battlefield.deploy(pawn1);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        var hero2Hand = battlefield.getHero2Hand();
+        var pawn2 = hero2Hand.getItem(0);
+        var hero2Current = battlefield.deploy(pawn2);
+        battlefield.pass();
+
+        // hero 1 turn
+        var attacker1 = hero1Current.CurrentGround.getItem(0);
+        var attack1: AttackToHeroContext = new AttackToHeroContext(attacker1);
         battlefield.attackToHero(attack1);
         battlefield.pass();
 
-        var hero2Hand = battlefield.getHero2Hand();
-        var pawn2 = hero2Hand.getItem(0);
-        battlefield.deploy(pawn2);
-        var attack2: AttackToHeroContext = new AttackToHeroContext(pawn2);
-        var secondAttack = battlefield.attackToHero(attack2)
-        assert.equal(secondAttack.OpponentHealth, 29);
+        //her 2 turn
+        var attacker2 = hero2Current.CurrentGround.getItem(0);
+        var attack2: AttackToHeroContext = new AttackToHeroContext(attacker2);
+        var attackResult = battlefield.attackToHero(attack2);
+        assert.equal(attackResult.OpponentHealth, 29);
     });
 });
 
@@ -132,12 +145,34 @@ describe('Battlefield attackToHero', () => {
         var hero2: HeroBase = getHeroMock();
         var battlefield: BattleField = new BattleField(hero1, hero2);
         battlefield.start();
+
+        // hero 1 turn
         var hero1Hand = battlefield.getHero1Hand();
-        var attackerPawn = hero1Hand.getItem(0);
-        battlefield.deploy(attackerPawn);
-        var attack1 = new AttackToHeroContext(attackerPawn);
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        battlefield.pass();
+
+        // hero 1 turn
+        var attacker1 = hero1Current.CurrentGround.getItem(0);
+        var attack1: AttackToHeroContext = new AttackToHeroContext(attacker1);
         battlefield.attackToHero(attack1);
-        assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attackerPawn.card.power);
+
+        assert.equal(battlefield.hero2.health, battlefield.hero2.hero.health - attacker1.card.power);
+    });
+
+    it('should throw PawnWaitingException if played card is waiting', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+
+        var waitingPawn = hero1Current.CurrentGround.getItem(0);
+        var attack1 = new AttackToHeroContext(waitingPawn);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnWaitingException);
     });
 });
 
@@ -192,6 +227,17 @@ describe('Battlefield deploy', () => {
         attackerPawn = current.CurrentHand.getItem(0);
         current = battlefield.deploy(attackerPawn);
         assert.equal(current.CurrentGround.count(), 3);
+    });
+
+    it('should deploy waiting pawn after pawn is deployed', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+
+        var waitingPawn = hero1Current.CurrentGround.getItem(0);
+        assert.equal(waitingPawn.deployingRound, 1);
     });
 });
 

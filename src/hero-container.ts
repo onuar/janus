@@ -2,7 +2,11 @@ import HeroBase from './herobase';
 import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
 import Guid from './foundation/guid';
-import { InvalidDeployException, InsufficientManaException, HeroContainerNotPreparedException } from './exceptions';
+import {
+    InvalidDeployException, InsufficientManaException,
+    HeroContainerNotPreparedException, InvalidAttackException,
+    PawnWaitingException
+} from './exceptions';
 import CardCollection from './card-collection';
 import CardContainerCollection from './card-container-collection';
 
@@ -45,7 +49,7 @@ export default class HeroContainer {
     }
 
     // deploys a pawn to on the ground
-    deploy(pawn: CardContainer, mana: number): boolean {
+    deploy(pawn: CardContainer, mana: number, round: number): boolean {
         var index = this.validHandCardCheck(pawn.id);
         if (index == -1) {
             throw new InvalidDeployException();
@@ -54,7 +58,7 @@ export default class HeroContainer {
         if (pawn.card.mana > mana) {
             throw new InsufficientManaException(`Pawn mana: ${pawn.card.mana} - Remaining Mana: ${mana}`);
         }
-
+        pawn.deployingRound = round;
         this.ground.add(pawn);
         this.hand.delete(index);
         return true;
@@ -71,21 +75,29 @@ export default class HeroContainer {
         return false;
     }
 
-    // returns the index of the found pawn. if not, returns -1.
-    validGroundCardCheck(id: string): number {
+    // returns the index of the found pawn. if not, throws exceptions.
+    validGroundCardCheck(id: string, round: number): number {
         this.checkPrepared();
         for (var index = 0; index < this.ground.count(); index++) {
             var element = this.ground.getItem(index);
             if (element.id == id) {
+                if (element.deployingRound == round) {
+                    throw new PawnWaitingException();
+                }
+
                 return index;
             }
         }
 
-        return -1;
+        throw new InvalidAttackException();
+    }
+
+    get health(): number {
+        return this._health;
     }
 
     // returns the index of the found pawn. if not, returns -1.
-    validHandCardCheck(id: string): number {
+    private validHandCardCheck(id: string): number {
         this.checkPrepared();
         for (var index = 0; index < this.hand.count(); index++) {
             var element = this.hand.getItem(index);
@@ -95,10 +107,6 @@ export default class HeroContainer {
         }
 
         return -1;
-    }
-
-    get health(): number {
-        return this._health;
     }
 
     private prepareDeck(): void {

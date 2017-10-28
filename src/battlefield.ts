@@ -47,8 +47,9 @@ export default class BattleField {
     deploy(pawn: CardContainer): DeployResultContext {
         this.checkStart();
         var attacker = this.getAttacker();
+        var round = this.manaRound();
         try {
-            var isDeployed = attacker.deploy(pawn, this._remainingMana);
+            var isDeployed = attacker.deploy(pawn, this._remainingMana, round);
         } catch (error) {
             throw error;
         }
@@ -62,11 +63,14 @@ export default class BattleField {
         this.checkStart();
         var attacker = this.getAttacker();
         var defencer = this.getDefencer();
+        var round = this.manaRound();
 
-        let isValidPawn = attacker.validGroundCardCheck(context.pawn.id);
-        if (isValidPawn == -1) {
-            throw new InvalidAttackException();
+        try {
+            attacker.validGroundCardCheck(context.pawn.id, round);
+        } catch (error) {
+            throw error;
         }
+
         defencer.damage(context.pawn.card.power);
         let result = new AttackToHeroResult(defencer.health);
         if (defencer.health <= 0) {
