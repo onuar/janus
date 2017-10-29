@@ -366,3 +366,13 @@ describe('Battlefield attackToHero', () => {
         assert.isNotNull(result.Winner);
     });
 });
+
+describe('Battlefield give-up', () => {
+
+    it('should return defencer as a winner', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+        battlefield.giveUp();
+        assert.equal(battlefield.Winner, battlefield.hero2.hero);
+    });
+});
