@@ -8,11 +8,16 @@ import AttackToHeroContext from '../src/attack-to-hero-context';
 import {
     NotStartedException, InvalidAttackException,
     InsufficientManaException, PawnWaitingException,
-    InvalidDeployException, PawnAlreadyAttackedException
+    InvalidDeployException, PawnAlreadyAttackedException,
+    InvalidStartException
 } from '../src/exceptions/';
 import CardContainer from '../src/card-container';
 import BasicWarrior from '../src/pawns/basic-warrior';
 import AttackToPawnContext from '../src/attack-to-pawn-context';
+import Card from '../src/card';
+import CardCollection from '../src/card-collection';
+import PawnFake from './fakes/pawn-fake';
+import GameOptions from '../src/game-options';
 
 describe('Battlefield', () => {
 
@@ -25,7 +30,9 @@ describe('Battlefield', () => {
     it('should pass health point to hero', () => {
         var hero1: HeroBase = getHeroMock();
         var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2, 35);
+        var options = new GameOptions();
+        options.health = 35;
+        var battlefield: BattleField = new BattleField(hero1, hero2, options);
         battlefield.start();
         assert.equal(battlefield.hero1.hero.health, 35);
         assert.equal(battlefield.hero2.hero.health, 35);
@@ -79,14 +86,18 @@ describe('Battlefield health point', () => {
     it('should be overridable', () => {
         var hero1: HeroBase = getHeroMock();
         var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2, 45);
+        var options = new GameOptions();
+        options.health = 45;
+        var battlefield: BattleField = new BattleField(hero1, hero2, options);
         assert.equal(battlefield.health, 45);
     });
 
     it('should be above zero', () => {
         var hero1: HeroBase = getHeroMock();
         var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2, -1);
+        var options = new GameOptions();
+        options.health = -1;
+        var battlefield: BattleField = new BattleField(hero1, hero2, options);
         assert.equal(battlefield.health, 30);
     });
 });
@@ -126,6 +137,26 @@ describe('Battlefield start', () => {
         var attack1: AttackToPawnContext = new AttackToPawnContext();
         expect(() => battlefield.pass()).to.throw(NotStartedException);
     });
+
+    it('should throw InvalidStartException if heroes\' health are not equal', () => {
+        var pawn = new BasicWarrior();
+
+        var cards = new CardCollection();
+        cards.add(pawn);
+        cards.add(pawn);
+        var hero1 = new HeroBase(new Player(), cards);
+
+        var cards2 = new CardCollection();
+        cards2.add(pawn);
+        var hero2 = new HeroBase(new Player(), cards2);
+
+        var options = new GameOptions();
+        options.initHandCount = 1;
+
+        var battlefield = new BattleField(hero1, hero2, options);
+
+        expect(() => battlefield.start()).to.throw(InvalidStartException);
+    });
 });
 
 describe('Battlefield heroes', () => {
@@ -133,7 +164,9 @@ describe('Battlefield heroes', () => {
     it('should have same health point', () => {
         var hero1: HeroBase = getHeroMock();
         var hero2: HeroBase = getHeroMock();
-        var battlefield: BattleField = new BattleField(hero1, hero2, 35);
+        var options = new GameOptions();
+        options.health = 35;
+        var battlefield: BattleField = new BattleField(hero1, hero2, options);
         assert.equal(battlefield.hero1.hero.health, battlefield.hero2.hero.health);
     });
 });
@@ -298,5 +331,38 @@ describe('Battlefield attackToHero', () => {
         var attack1 = new AttackToHeroContext(pawn1);
         battlefield.attackToHero(attack1);
         expect(() => battlefield.attackToHero(attack1)).to.throw(PawnAlreadyAttackedException);
+    });
+
+    it('should return a winner if defencer lost', () => {
+        var boss = new PawnFake(30, 1, 1);
+
+        var cards = new CardCollection();
+        cards.add(boss);
+        var hero1 = new HeroBase(new Player(), cards);
+
+        var cards2 = new CardCollection();
+        cards2.add(boss);
+        var hero2 = new HeroBase(new Player(), cards2);
+
+        var options = new GameOptions();
+        options.health = 30;
+        options.initHandCount = 1;
+
+        var battlefield = new BattleField(hero1, hero2, options);
+        battlefield.start();
+
+        // hero 1 turn
+        var hero1Hand = battlefield.getHero1Hand();
+        var attackerPawn = hero1Hand.getItem(0);
+        var current = battlefield.deploy(attackerPawn);
+        battlefield.pass();
+
+        // hero 2 turn
+        battlefield.pass();
+
+        // hero 1 turn
+        var attack1 = new AttackToHeroContext(current.CurrentGround.getItem(0));
+        var result = battlefield.attackToHero(attack1);
+        assert.isNotNull(result.Winner);
     });
 });

@@ -2,7 +2,9 @@ import { expect, assert } from 'chai';
 import HeroContainer from '../src/hero-container';
 import HeroBase from '../src/herobase';
 import getHeroMock from './fakes/herobase-fake';
-import { HeroContainerNotPreparedException } from '../src/exceptions/herocontainer-not-ready';
+import {
+    HeroContainerNotPreparedException, InsufficientPawnException
+} from '../src/exceptions';
 
 describe('Hero Container', () => {
 
@@ -33,5 +35,12 @@ describe('Hero Container prepare', () => {
         var hero = getHeroMock();
         var heroContainer = new HeroContainer(hero);
         expect(() => heroContainer.deadCheck()).to.throw(HeroContainerNotPreparedException);
+    });
+
+    it('should throw InsufficientPawnException if card count is less than initHandCount', () => {
+        var hero = getHeroMock();
+        var heroContainer = new HeroContainer(hero, 31);
+        expect(() => heroContainer.prepare()).to.throw(InsufficientPawnException);
+
     });
 });

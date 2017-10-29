@@ -7,11 +7,13 @@ import Collection from './foundation/generic-collection';
 import CardContainer from './card-container';
 import DeployResultContext from './deploy-result-context';
 import AttackToHeroResult from './attack-to-hero-result';
+import GameOptions from './game-options';
+import { InvalidStartException } from './exceptions/invalid-start';
 
 export default class BattleField {
     public hero1: HeroContainer;
     public hero2: HeroContainer;
-    public health: number;
+    public readonly health: number = 30;
 
     private _turn: number;
     private _manaTurn: number;
@@ -20,17 +22,22 @@ export default class BattleField {
     private _gameOver: boolean;
     private _winner: HeroBase;
 
-    constructor(hero1: HeroBase, hero2: HeroBase, health?: number) {
-        if (hero1 == null || hero2 == null) {
+    constructor(hero1: HeroBase, hero2: HeroBase, options?: GameOptions) {
+        if (hero1 == undefined || hero2 == undefined) {
             throw new HeroNullException();
         }
 
-        this.health = (health == null || health < 0 ? 30 : health);
+        var initHandCount = 4;
+        if (options != undefined) {
+            this.health = options.health != undefined && options.health > 0 ? options.health : 30;
+            initHandCount = options.initHandCount != undefined && options.initHandCount > 0 ? options.initHandCount : 4;
+        }
+
         hero1.health = this.health;
         hero2.health = this.health;
 
-        this.hero1 = new HeroContainer(hero1);
-        this.hero2 = new HeroContainer(hero2);
+        this.hero1 = new HeroContainer(hero1, initHandCount);
+        this.hero2 = new HeroContainer(hero2, initHandCount);
 
         this._turn = 1;
         this._manaTurn = 0;
@@ -38,8 +45,13 @@ export default class BattleField {
     }
 
     start(): boolean {
+
         this._started = true;
         this.prepare();
+        if (this.hero1.hero.cards.count() != this.hero2.hero.cards.count()) {
+            throw new InvalidStartException(`Hero 1: ${this.hero1.hero.cards.count()} Hero 2: ${this.hero2.hero.cards.count()}`);
+        }
+        
         this._remainingMana = this.manaRound();
         return this._started;
     }
@@ -70,6 +82,7 @@ export default class BattleField {
         } catch (error) {
             throw error;
         }
+
         attacker.setAsAttacked(context.pawn, round);
         defencer.damage(context.pawn, round);
         let result = new AttackToHeroResult(defencer.health);

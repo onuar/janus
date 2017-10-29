@@ -7,3 +7,5 @@ export * from './insufficient-mana';
 export * from './game-over';
 export * from './pawn-waiting';
 export * from './pawn-already-attacked';
+export * from './insufficient-pawn';
+export * from './invalid-start';

@@ -5,7 +5,8 @@ import Guid from './foundation/guid';
 import {
     InvalidDeployException, InsufficientManaException,
     HeroContainerNotPreparedException, InvalidAttackException,
-    PawnWaitingException, PawnAlreadyAttackedException
+    PawnWaitingException, PawnAlreadyAttackedException,
+    InsufficientPawnException
 } from './exceptions';
 import CardCollection from './card-collection';
 import CardContainerCollection from './card-container-collection';
@@ -18,17 +19,21 @@ export default class HeroContainer {
     public dead: CardContainerCollection;
     public deck: CardContainerCollection;
 
-    private initHandCount: number;
+    private _initHandCount: number;
     private _prepared: boolean = false;
     private _health: number;
 
     constructor(hero: HeroBase, initHandCount: number = 4) {
         this.hero = hero;
-        this.initHandCount = initHandCount;
+        this._initHandCount = initHandCount;
         this._health = hero.health;
     }
 
     prepare(): void {
+        if (this.hero.cards.count() < this._initHandCount) {
+            throw new InsufficientPawnException(`Pawn count (${this.hero.cards.count()}) must be greater than init hand pawn count(${this._initHandCount})`);
+        }
+
         this.deck = new CardContainerCollection();
         this.hand = new CardContainerCollection();
         this.dead = new CardContainerCollection();
@@ -43,9 +48,11 @@ export default class HeroContainer {
 
     // pick a card from top of the deck to hand
     pick(): void {
-        let picked = this.deck.getItem(0);
-        this.hand.add(picked);
-        this.deck.delete(0);
+        if (this.deck.count() > 0) {
+            let picked = this.deck.getItem(0);
+            this.hand.add(picked);
+            this.deck.delete(0);
+        }
     }
 
     // deploys a pawn to on the ground
@@ -134,11 +141,11 @@ export default class HeroContainer {
     }
 
     private takeCardsToHand(): void {
-        for (var index = 0; index < this.initHandCount; index++) {
+        for (var index = 0; index < this._initHandCount; index++) {
             var element = this.deck.getItem(index);
             this.hand.add(element);
         }
-        for (var index = 0; index < this.initHandCount; index++) {
+        for (var index = 0; index < this._initHandCount; index++) {
             var element = this.deck.getItem(index);
             this.deck.delete(index);
         }

@@ -7,6 +7,7 @@ export default class CardCollection extends Collection<Card>{
         if (item.mana < 0 || item.mana > 10) {
             throw new InvalidManaException(`${item.mana}`);
         }
+        
         super.add(item);
     }
 }
