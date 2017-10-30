@@ -14,7 +14,9 @@ function getHeroMock(): HeroBase {
         cards.add(c);
 
     }
-    return new HeroBase(player, cards);
+    var hero = new HeroBase(player, cards);
+    hero.health = 30;
+    return hero;
 }
 
 export default getHeroMock;

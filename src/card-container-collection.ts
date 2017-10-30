@@ -14,4 +14,15 @@ export default class CardContainerCollection extends Collection<CardContainer>{
 
         return undefined;
     }
+
+    indexOfId(id: string): number {
+        for (var index = 0; index < this.count(); index++) {
+            var element = this.getItem(index);
+            if (element.id == id) {
+                return index;
+            }
+        }
+
+        return -1;
+    }
 }

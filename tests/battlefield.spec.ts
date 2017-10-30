@@ -21,7 +21,7 @@ import GameOptions from '../src/game-options';
 
 describe('Battlefield', () => {
 
-    it('should have two hero', () => {
+    it('should have two heroes', () => {
         var battlefield: BattleField = getBattlefieldMock();
         assert.isNotNull(battlefield.hero1);
         assert.isNotNull(battlefield.hero2);
@@ -128,13 +128,13 @@ describe('Battlefield start', () => {
 
     it('should be called before attackToPawn', () => {
         var battlefield: BattleField = getBattlefieldMock();
-        var attack1: AttackToPawnContext = new AttackToPawnContext();
+        var pawn = new CardContainer('GUID', new BasicWarrior());
+        var attack1: AttackToPawnContext = new AttackToPawnContext(pawn, pawn);
         expect(() => battlefield.attackToPawn(attack1)).to.throw(NotStartedException);
     });
 
     it('should be called before pass', () => {
         var battlefield: BattleField = getBattlefieldMock();
-        var attack1: AttackToPawnContext = new AttackToPawnContext();
         expect(() => battlefield.pass()).to.throw(NotStartedException);
     });
 
@@ -302,35 +302,35 @@ describe('Battlefield attackToHero', () => {
     });
 
     it('should throw PawnWaitingException if played card is waiting', () => {
-        var battlefield = getBattlefieldMock();
-        battlefield.start();
-        var hero1Hand = battlefield.getHero1Hand();
-        var pawn1 = hero1Hand.getItem(0);
-        var hero1Current = battlefield.deploy(pawn1);
+        // var battlefield = getBattlefieldMock();
+        // battlefield.start();
+        // var hero1Hand = battlefield.getHero1Hand();
+        // var pawn1 = hero1Hand.getItem(0);
+        // var hero1Current = battlefield.deploy(pawn1);
 
-        var waitingPawn = hero1Current.CurrentGround.getItem(0);
-        var attack1 = new AttackToHeroContext(waitingPawn);
-        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnWaitingException);
+        // var waitingPawn = hero1Current.CurrentGround.getItem(0);
+        // var attack1 = new AttackToHeroContext(waitingPawn);
+        // expect(() => battlefield.attackToHero(attack1)).to.throw(PawnWaitingException);
     });
 
     it('should throw PawnAlreadyAttackedException if pawn is already attacked', () => {
-        var battlefield = getBattlefieldMock();
-        battlefield.start();
+        // var battlefield = getBattlefieldMock();
+        // battlefield.start();
 
-        // hero 1 turn
-        var hero1Hand = battlefield.getHero1Hand();
-        var pawn1 = hero1Hand.getItem(0);
-        var hero1Current = battlefield.deploy(pawn1);
-        battlefield.pass();
+        // // hero 1 turn
+        // var hero1Hand = battlefield.getHero1Hand();
+        // var pawn1 = hero1Hand.getItem(0);
+        // var hero1Current = battlefield.deploy(pawn1);
+        // battlefield.pass();
 
-        // hero 2 turn
-        battlefield.pass();
+        // // hero 2 turn
+        // battlefield.pass();
 
-        // hero 1 turn
-        var pawn1 = hero1Current.CurrentGround.getItem(0);
-        var attack1 = new AttackToHeroContext(pawn1);
-        battlefield.attackToHero(attack1);
-        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnAlreadyAttackedException);
+        // // hero 1 turn
+        // var pawn1 = hero1Current.CurrentGround.getItem(0);
+        // var attack1 = new AttackToHeroContext(pawn1);
+        // battlefield.attackToHero(attack1);
+        // expect(() => battlefield.attackToHero(attack1)).to.throw(PawnAlreadyAttackedException);
     });
 
     it('should return a winner if defencer lost', () => {
@@ -364,6 +364,121 @@ describe('Battlefield attackToHero', () => {
         var attack1 = new AttackToHeroContext(current.CurrentGround.getItem(0));
         var result = battlefield.attackToHero(attack1);
         assert.isNotNull(result.Winner);
+    });
+});
+
+describe('Battlefield attackToPawn', () => {
+
+    it('should reduce opponent pawn\'s health', () => {
+
+        var destroyer = new PawnFake(1, 1, 1);
+        var tank = new PawnFake(1, 3, 1);
+
+        var cards = new CardCollection();
+        cards.add(destroyer);
+        var hero1 = new HeroBase(new Player(), cards);
+
+        var cards2 = new CardCollection();
+        cards2.add(tank);
+        var hero2 = new HeroBase(new Player(), cards2);
+
+        var options = new GameOptions();
+        options.initHandCount = 1;
+
+        var battlefield = new BattleField(hero1, hero2, options);
+        battlefield.start();
+
+        // hero 1 turn
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        var hero2Hand = battlefield.getHero2Hand();
+        var pawn2 = hero2Hand.getItem(0);
+        var hero2Current = battlefield.deploy(pawn2);
+        battlefield.pass();
+
+        // hero 1 turn
+        var attacker = hero1Current.CurrentGround.getItem(0);
+        var defencer = hero2Current.CurrentGround.getItem(0);
+        var attack = new AttackToPawnContext(attacker, defencer);
+        var result = battlefield.attackToPawn(attack);
+        assert.equal(result.dead, false);
+        assert.equal(result.defencerGround.getItem(0).Health, 2);
+    });
+
+    it('should throw PawnWaitingException if played card is waiting', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+
+        var waitingPawn = hero1Current.CurrentGround.getItem(0);
+        var attack1 = new AttackToHeroContext(waitingPawn);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnWaitingException);
+    });
+
+    it('should throw PawnAlreadyAttackedException if pawn is already attacked', () => {
+        var battlefield = getBattlefieldMock();
+        battlefield.start();
+
+        // hero 1 turn
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        battlefield.pass();
+
+        // hero 1 turn
+        var pawn1 = hero1Current.CurrentGround.getItem(0);
+        var attack1 = new AttackToHeroContext(pawn1);
+        battlefield.attackToHero(attack1);
+        expect(() => battlefield.attackToHero(attack1)).to.throw(PawnAlreadyAttackedException);
+    });
+
+    it('should remove dead card from ground', () => {
+
+        var destroyer = new PawnFake(1, 1, 1);
+        var tank = new PawnFake(1, 1, 1);
+
+        var cards = new CardCollection();
+        cards.add(destroyer);
+        var hero1 = new HeroBase(new Player(), cards);
+
+        var cards2 = new CardCollection();
+        cards2.add(tank);
+        var hero2 = new HeroBase(new Player(), cards2);
+
+        var options = new GameOptions();
+        options.initHandCount = 1;
+
+        var battlefield = new BattleField(hero1, hero2, options);
+        battlefield.start();
+
+        // hero 1 turn
+        var hero1Hand = battlefield.getHero1Hand();
+        var pawn1 = hero1Hand.getItem(0);
+        var hero1Current = battlefield.deploy(pawn1);
+        battlefield.pass();
+
+        // hero 2 turn
+        var hero2Hand = battlefield.getHero2Hand();
+        var pawn2 = hero2Hand.getItem(0);
+        var hero2Current = battlefield.deploy(pawn2);
+        battlefield.pass();
+
+        // hero 1 turn
+        var attacker = hero1Current.CurrentGround.getItem(0);
+        var defencer = hero2Current.CurrentGround.getItem(0);
+        var attack = new AttackToPawnContext(attacker, defencer);
+        var result = battlefield.attackToPawn(attack);
+        assert.equal(result.dead, true);
+        assert.equal(result.defencerGround.count(), 0);
     });
 });
 

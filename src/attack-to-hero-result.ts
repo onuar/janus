@@ -1,4 +1,5 @@
 import HeroBase from './herobase';
+
 export default class AttackToHeroResult {
     private readonly _opponentHealth: number;
     private _winner: HeroBase;

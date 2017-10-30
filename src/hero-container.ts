@@ -71,17 +71,31 @@ export default class HeroContainer {
         return true;
     }
 
+    // returns current health by damage power
+    damage(pawn: CardContainer): number {
+        this._health -= pawn.card.power;
+        return this._health;
+    }
+
+    // returns true if pawn is dead otherwise false
+    damageToPawn(attackingPawn: CardContainer, defencingPawn: CardContainer): boolean {
+        var pawnHealth = defencingPawn.damage(attackingPawn.card.power);
+        if (pawnHealth <= 0) {
+            // the pawn is dead
+            this.dead.add(defencingPawn);
+            var deadIndex = this.ground.indexOfId(defencingPawn.id);
+            this.ground.delete(deadIndex);
+            return true;
+        }
+
+        return false;
+    }
+
     setAsAttacked(pawn: CardContainer, round: number): void {
         var item = this.ground.getItemById(pawn.id);
         if (item != undefined) {
             item.lastAttackRound = round;
         }
-    }
-
-    // returns current health by damage power
-    damage(pawn: CardContainer, round: number): number {
-        this._health -= pawn.card.power;
-        return this._health;
     }
 
     deadCheck(): boolean {
@@ -90,7 +104,7 @@ export default class HeroContainer {
     }
 
     // returns the index of the found pawn. if not, throws exceptions.
-    validGroundCardCheck(id: string, round: number): number {
+    validGroundCardCheckForAttack(id: string, round: number): number {
         this.checkPrepared();
         for (var index = 0; index < this.ground.count(); index++) {
             var element = this.ground.getItem(index);
@@ -104,6 +118,18 @@ export default class HeroContainer {
                 }
 
                 return index;
+            }
+        }
+
+        throw new InvalidAttackException();
+    }
+
+    validGroundCardCheckForDefence(id: string): void {
+        this.checkPrepared();
+        for (var index = 0; index < this.ground.count(); index++) {
+            var element = this.ground.getItem(index);
+            if (element.id == id) {
+                return;
             }
         }
 

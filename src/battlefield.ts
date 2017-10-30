@@ -9,6 +9,7 @@ import DeployResultContext from './deploy-result-context';
 import AttackToHeroResult from './attack-to-hero-result';
 import GameOptions from './game-options';
 import { InvalidStartException } from './exceptions/invalid-start';
+import AttackToPawnResult from './attack-to-pawn-result';
 
 export default class BattleField {
     public hero1: HeroContainer;
@@ -51,7 +52,7 @@ export default class BattleField {
         if (this.hero1.hero.cards.count() != this.hero2.hero.cards.count()) {
             throw new InvalidStartException(`Hero 1: ${this.hero1.hero.cards.count()} Hero 2: ${this.hero2.hero.cards.count()}`);
         }
-        
+
         this._remainingMana = this.manaRound();
         return this._started;
     }
@@ -78,15 +79,15 @@ export default class BattleField {
         var round = this.manaRound();
 
         try {
-            attacker.validGroundCardCheck(context.pawn.id, round);
+            attacker.validGroundCardCheckForAttack(context.pawn.id, round);
         } catch (error) {
             throw error;
         }
 
+        defencer.damage(context.pawn);
         attacker.setAsAttacked(context.pawn, round);
-        defencer.damage(context.pawn, round);
-        let result = new AttackToHeroResult(defencer.health);
 
+        let result = new AttackToHeroResult(defencer.health);
         if (defencer.health <= 0) {
             result.setWinner(attacker.hero);
             this._winner = attacker.hero;
@@ -96,11 +97,25 @@ export default class BattleField {
         return result;
     }
 
-    // todo: will return attackToPawnResult
-    attackToPawn(context: AttackToPawnContext): boolean {
-        // WIP
+    attackToPawn(context: AttackToPawnContext): AttackToPawnResult {
         this.checkStart();
-        return true;
+
+        var attacker = this.getAttacker();
+        var defencer = this.getDefencer();
+        var round = this.manaRound();
+
+        try {
+            attacker.validGroundCardCheckForAttack(context.attackingPawn.id, round);
+            defencer.validGroundCardCheckForDefence(context.defencingPawn.id);
+        } catch (error) {
+            throw error;
+        }
+
+        var dead = defencer.damageToPawn(context.attackingPawn, context.defencingPawn);
+        attacker.setAsAttacked(context.attackingPawn, round);
+
+        let result = new AttackToPawnResult(dead, defencer.ground);
+        return result;
     }
 
     pass(): void {
